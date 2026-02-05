@@ -732,8 +732,17 @@
   opacity: 0.7;
 }
 
+/* Tables - responsive with horizontal scroll */
+.rte-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
 .rte table {
   width: 100%;
+  min-width: 500px;
   border-collapse: collapse;
   margin: 20px 0;
   font-size: 13px;
@@ -741,20 +750,45 @@
 
 .rte table th,
 .rte table td {
-  padding: 10px 12px;
+  padding: 12px 16px;
   border: 1px solid var(--color-border);
-  text-align: left;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .rte table th {
-  background: #f5f5f5;
+  background: #f8f8f8;
   font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
+.rte table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* Images - NEVER crop, maintain aspect ratio */
 .rte img {
+  display: block;
   max-width: 100%;
+  width: auto;
   height: auto;
-  margin: 16px 0;
+  margin: 20px auto;
+  object-fit: contain;
+}
+
+/* Size chart images - special styling */
+.rte img[alt*="size" i],
+.rte img[alt*="chart" i],
+.rte img[alt*="таблица" i],
+.rte img[alt*="размер" i] {
+  width: 100%;
+  max-width: 800px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 16px;
+  background: #fff;
 }
 </style>
 

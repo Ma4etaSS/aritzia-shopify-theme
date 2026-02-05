@@ -1071,3 +1071,57 @@ html, body {
     padding-bottom: max(40px, env(safe-area-inset-bottom));
   }
 }
+
+/* =========================================
+   CONTENT IMAGES (Never Crop)
+   ========================================= */
+
+/* Content images - maintain proportions, never crop */
+.content-image,
+.page-content img,
+.article-content img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Product images - fill container, can crop */
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* Image with aspect ratio containers */
+.aspect-3-4 {
+  aspect-ratio: 3/4;
+}
+
+.aspect-4-3 {
+  aspect-ratio: 4/3;
+}
+
+.aspect-1-1 {
+  aspect-ratio: 1/1;
+}
+
+.aspect-16-9 {
+  aspect-ratio: 16/9;
+}
+
+/* Object fit utilities */
+.object-contain {
+  object-fit: contain !important;
+}
+
+.object-cover {
+  object-fit: cover !important;
+}
+
+.object-scale-down {
+  object-fit: scale-down !important;
+}
