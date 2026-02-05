@@ -1,23 +1,29 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "color_background": "#ffffff",
-    "color_foreground": "#000000",
     "color_text": "#000000",
+    "cart_show_free_shipping": true,
+    "cart_free_shipping_threshold": "150",
+    "color_foreground": "#000000",
     "color_text_muted": "#666666",
     "color_border": "#e5e5e5",
     "color_accent": "#000000",
     "heading_font": "cormorant_garamond_n4",
     "body_font": "assistant_n4",
     "cart_drawer_enabled": true,
-    "cart_show_free_shipping": true,
-    "cart_free_shipping_threshold": "150",
     "sections": {
       "header": {
         "type": "header",
-        "settings": {
-          "transparent_header": true,
-          "sticky_header": true
-        }
+        "settings": {}
       },
       "footer": {
         "type": "footer",

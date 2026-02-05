@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -8,11 +17,14 @@
           "settings": {
             "subheading": "New Collection",
             "heading": "Work Wardrobe Spring 26",
-            "button_label": "Shop Now"
+            "button_label": "Shop Now",
+            "button_link": ""
           }
         }
       },
-      "block_order": ["slide-1"],
+      "block_order": [
+        "slide-1"
+      ],
       "settings": {
         "height": "full",
         "show_overlay": true,
@@ -26,29 +38,42 @@
         "cat-1": {
           "type": "category",
           "settings": {
-            "title": "New This Week"
+            "image": "shopify://shop_images/7a3c6ff6-6751-4b94-a96e-219ef45e3e68_b18f4b4d-1f36-4491-9fe2-5979846d1aa5.jpg",
+            "title": "Sheepskin Pointed",
+            "link": "shopify://products/sheepskin-pointed-toe-stiletto-heel-shoes-side-empty-high-heel-sandals"
           }
         },
         "cat-2": {
           "type": "category",
           "settings": {
-            "title": "Jackets & Coats"
+            "image": "shopify://shop_images/2856781869745.jpg",
+            "title": "Women's Trousers",
+            "link": "shopify://products/high-waist-and-thin-straight-tube-slim-hole-jeans-womens-trousers"
           }
         },
         "cat-3": {
           "type": "category",
           "settings": {
-            "title": "Dresses"
+            "image": "shopify://shop_images/a3a5bc1e-fa4a-494f-9ad5-7335d0652069.jpg",
+            "title": "Elegant New Womens",
+            "link": "shopify://products/womens-autumn-winter-shirts-in-european-and-american-styles"
           }
         },
         "cat-4": {
           "type": "category",
           "settings": {
-            "title": "Shirts & Blouses"
+            "image": "shopify://shop_images/27d13633-83b0-4efb-b441-7f5e407cf873.jpg",
+            "title": "Women's Temperament",
+            "link": "shopify://products/womens-temperament-fashion-thin-wool-professional-suit"
           }
         }
       },
-      "block_order": ["cat-1", "cat-2", "cat-3", "cat-4"],
+      "block_order": [
+        "cat-1",
+        "cat-2",
+        "cat-3",
+        "cat-4"
+      ],
       "settings": {
         "heading": "Trending Now"
       }
@@ -61,6 +86,7 @@
           "settings": {
             "subheading": "Now Trending",
             "heading": "After Dark",
+            "link": "",
             "light_text": true
           }
         },
@@ -69,11 +95,15 @@
           "settings": {
             "subheading": "The Pre-Spring Collection",
             "heading": "New Essentials",
+            "link": "",
             "light_text": false
           }
         }
       },
-      "block_order": ["feature-1", "feature-2"],
+      "block_order": [
+        "feature-1",
+        "feature-2"
+      ],
       "settings": {}
     },
     "featured-collection": {
@@ -81,6 +111,7 @@
       "settings": {
         "subheading": "Just Dropped",
         "heading": "New Arrivals",
+        "collection": "",
         "products_count": 8,
         "show_view_all": true
       }
