@@ -118,6 +118,15 @@
                       {%- endfor -%}
                     </ul>
                   {%- when 'price_range' -%}
+                    {%- assign min_price_cents = filter.min_value.value | default: 0 -%}
+                    {%- assign max_price_cents = filter.max_value.value | default: filter.range_max -%}
+                    {%- assign range_max_cents = filter.range_max -%}
+                    
+                    {%- comment -%} Convert cents to dollars {%- endcomment -%}
+                    {%- assign min_price = min_price_cents | divided_by: 100.0 | floor -%}
+                    {%- assign max_price = max_price_cents | divided_by: 100.0 | ceil -%}
+                    {%- assign range_max = range_max_cents | divided_by: 100.0 | ceil -%}
+                    
                     <div class="collection-filter__price">
                       <div class="collection-filter__price-inputs">
                         <div class="collection-filter__price-field">
@@ -126,10 +135,11 @@
                             type="number" 
                             id="Filter-{{ filter.label | handleize }}-GTE"
                             name="{{ filter.min_value.param_name }}"
-                            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                            value="{% if filter.min_value.value %}{{ min_price }}{% endif %}"
                             placeholder="0"
                             min="0"
-                            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            max="{{ range_max }}"
+                            step="1"
                           >
                         </div>
                         <span class="collection-filter__price-separator">–</span>
@@ -139,13 +149,17 @@
                             type="number" 
                             id="Filter-{{ filter.label | handleize }}-LTE"
                             name="{{ filter.max_value.param_name }}"
-                            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
-                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            value="{% if filter.max_value.value %}{{ max_price }}{% endif %}"
+                            placeholder="{{ range_max }}"
                             min="0"
-                            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            max="{{ range_max }}"
+                            step="1"
                           >
                         </div>
                       </div>
+                      <p class="collection-filter__price-hint">
+                        Range: $0 – ${{ range_max }}
+                      </p>
                     </div>
                 {%- endcase -%}
               </div>
@@ -592,6 +606,12 @@
   color: var(--color-text-muted);
 }
 
+.collection-filter__price-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
 .collection-filters__actions {
   display: flex;
   flex-direction: column;
@@ -733,12 +753,42 @@
     });
   });
 
-  // Auto-submit filters on desktop
-  if (window.innerWidth >= 1024) {
-    const filterForm = collectionPage.querySelector('[data-filter-form]');
-    filterForm?.querySelectorAll('input').forEach(input => {
-      input.addEventListener('change', () => {
-        filterForm.submit();
+  // Filter form handling
+  const filterForm = collectionPage.querySelector('[data-filter-form]');
+  
+  if (filterForm) {
+    // Handle form submission - convert price from dollars to cents
+    filterForm.addEventListener('submit', function(e) {
+      // Find price inputs and convert to cents
+      const priceInputs = this.querySelectorAll('input[type="number"][name*="price"]');
+      priceInputs.forEach(input => {
+        if (input.value) {
+          // Convert dollars to cents (multiply by 100)
+          input.value = Math.round(parseFloat(input.value) * 100);
+        }
+      });
+    });
+    
+    // Auto-submit checkbox filters on desktop
+    if (window.innerWidth >= 1024) {
+      filterForm.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', () => {
+          filterForm.submit();
+        });
+      });
+    }
+    
+    // Debounce price input changes
+    let priceTimeout;
+    filterForm.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('input', () => {
+        clearTimeout(priceTimeout);
+        priceTimeout = setTimeout(() => {
+          // Only auto-submit on desktop
+          if (window.innerWidth >= 1024) {
+            filterForm.submit();
+          }
+        }, 800);
       });
     });
   }
