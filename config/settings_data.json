@@ -1,0 +1,69 @@
+{
+  "current": {
+    "color_primary": "#000000",
+    "color_secondary": "#FFFFFF",
+    "color_background": "#FFFFFF",
+    "color_background_secondary": "#F5F5F5",
+    "color_text": "#000000",
+    "color_text_secondary": "#666666",
+    "color_sale": "#C41E3A",
+    "font_body_size": 16,
+    "page_width": 1440,
+    "spacing_sections": 60,
+    "cart_type": "drawer",
+    "cart_show_free_shipping": true,
+    "cart_free_shipping_threshold": "150",
+    "predictive_search_enabled": true,
+    "predictive_search_show_vendor": false,
+    "predictive_search_show_price": true,
+    "social_instagram_link": "",
+    "social_facebook_link": "",
+    "social_twitter_link": "",
+    "social_pinterest_link": "",
+    "social_tiktok_link": "",
+    "social_youtube_link": "",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu",
+          "sticky_header": true,
+          "header_style": "solid"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "link_list_1": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Help",
+              "menu": "footer"
+            }
+          },
+          "link_list_2": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Company",
+              "menu": "footer"
+            }
+          },
+          "link_list_3": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Legal",
+              "menu": "footer"
+            }
+          }
+        },
+        "block_order": ["link_list_1", "link_list_2", "link_list_3"],
+        "settings": {
+          "show_newsletter": true,
+          "newsletter_title": "Subscribe to our newsletter",
+          "newsletter_text": "<p>Get the latest updates on new products and upcoming sales</p>",
+          "show_payment_icons": true
+        }
+      }
+    }
+  }
+}

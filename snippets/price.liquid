@@ -1,0 +1,48 @@
+{%- comment -%}
+  Price Snippet
+  
+  Accepts:
+  - product: {Object} Product object
+  - variant: {Object} Variant object (optional)
+  
+  Usage:
+  {% render 'price', product: product %}
+  {% render 'price', product: product, variant: variant %}
+{%- endcomment -%}
+
+{%- liquid
+  if variant
+    assign target = variant
+  else
+    assign target = product.selected_or_first_available_variant
+  endif
+  
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price
+  assign on_sale = false
+  
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+  
+  assign price_varies = false
+  if product.price_varies
+    assign price_varies = true
+  endif
+-%}
+
+<div class="price{% if on_sale %} price--on-sale{% endif %}{% unless product.available %} price--sold-out{% endunless %}">
+  {%- if price_varies -%}
+    <span class="price__from">From </span>
+  {%- endif -%}
+  
+  <span class="price__regular">
+    {{ price | money }}
+  </span>
+  
+  {%- if on_sale -%}
+    <span class="price__compare">
+      {{ compare_at_price | money }}
+    </span>
+  {%- endif -%}
+</div>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {% render 'meta-tags' %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  {% comment %} CSS {% endcomment %}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'component-header.css' | asset_url | stylesheet_tag }}
+  {{ 'component-footer.css' | asset_url | stylesheet_tag }}
+  {{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+  {% comment %} Preconnect to Shopify CDN {% endcomment %}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+  {% comment %} Preload critical assets {% endcomment %}
+  <link rel="preload" as="style" href="{{ 'base.css' | asset_url }}">
+
+  {{ content_for_header }}
+
+  {% comment %} CSS Variables from Theme Settings {% endcomment %}
+  <style>
+    :root {
+      --color-primary: {{ settings.color_primary }};
+      --color-secondary: {{ settings.color_secondary }};
+      --color-background: {{ settings.color_background }};
+      --color-background-secondary: {{ settings.color_background_secondary }};
+      --color-text: {{ settings.color_text }};
+      --color-text-secondary: {{ settings.color_text_secondary }};
+      --color-sale: {{ settings.color_sale }};
+      --page-width: {{ settings.page_width }}px;
+      --spacing-sections: {{ settings.spacing_sections }}px;
+      --font-body-size: {{ settings.font_body_size }}px;
+    }
+    
+    {% if settings.font_heading %}
+      {{ settings.font_heading | font_face: font_display: 'swap' }}
+    {% endif %}
+    
+    {% if settings.font_body %}
+      {{ settings.font_body | font_face: font_display: 'swap' }}
+    {% endif %}
+  </style>
+</head>
+
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+  <a class="skip-to-content-link visually-hidden" href="#MainContent">
+    {{ 'accessibility.skip_to_content' | t }}
+  </a>
+
+  {% comment %} Announcement Bar {% endcomment %}
+  {% section 'announcement-bar' %}
+
+  {% comment %} Header {% endcomment %}
+  {% section 'header' %}
+
+  {% comment %} Main Content {% endcomment %}
+  <main id="MainContent" class="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% comment %} Footer {% endcomment %}
+  {% section 'footer' %}
+
+  {% comment %} Cart Drawer {% endcomment %}
+  {% if settings.cart_type == 'drawer' %}
+    {% render 'cart-drawer' %}
+  {% endif %}
+
+  {% comment %} JavaScript {% endcomment %}
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  {% comment %} Shopify Features {% endcomment %}
+  <script>
+    window.shopUrl = '{{ request.origin }}';
+    window.routes = {
+      cart_add_url: '{{ routes.cart_add_url }}',
+      cart_change_url: '{{ routes.cart_change_url }}',
+      cart_update_url: '{{ routes.cart_update_url }}',
+      cart_url: '{{ routes.cart_url }}',
+      predictive_search_url: '{{ routes.predictive_search_url }}'
+    };
+    window.cartStrings = {
+      error: `{{ 'sections.cart.cart_error' | t }}`,
+      quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+    };
+  </script>
+</body>
+</html>

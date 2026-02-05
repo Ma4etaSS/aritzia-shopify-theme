@@ -1,0 +1,82 @@
+{%- comment -%}
+  Collection Banner Section
+{%- endcomment -%}
+
+<section class="collection-banner">
+  <div class="collection-banner__container container">
+    <nav class="collection-banner__breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span class="collection-banner__separator">—</span>
+      <span aria-current="page">{{ collection.title }}</span>
+    </nav>
+    
+    <h1 class="collection-banner__title">{{ collection.title }}</h1>
+    
+    {%- if section.settings.show_collection_description and collection.description != blank -%}
+      <div class="collection-banner__description">
+        {{ collection.description }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .collection-banner {
+    padding: var(--space-8) 0;
+  }
+
+  .collection-banner__breadcrumb {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .collection-banner__breadcrumb a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .collection-banner__separator {
+    margin: 0 var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .collection-banner__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-normal);
+  }
+
+  @media (min-width: 768px) {
+    .collection-banner__title {
+      font-size: var(--text-4xl);
+    }
+  }
+
+  .collection-banner__description {
+    margin-top: var(--space-4);
+    max-width: 800px;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "class": "section-collection-banner",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "Show collection image",
+      "default": false
+    }
+  ]
+}
+{% endschema %}
