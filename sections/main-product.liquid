@@ -833,58 +833,68 @@
   }
 
   function updateGalleryForVariant(variant) {
-    // Multiple ways to find the variant's image
-    let targetMediaId = null;
+    // In Shopify, variant.featured_image and media have different IDs
+    // We need to match by image position or by comparing image URLs
     
-    // Method 1: Check variant.featured_media (object with id)
-    if (variant.featured_media && variant.featured_media.id) {
-      targetMediaId = variant.featured_media.id;
-    }
-    // Method 2: Check variant.featured_image (object with id)
-    else if (variant.featured_image && variant.featured_image.id) {
-      targetMediaId = variant.featured_image.id;
-    }
-    // Method 3: Check variant.featured_media as just ID number
-    else if (variant.featured_media && typeof variant.featured_media === 'number') {
-      targetMediaId = variant.featured_media;
-    }
-    // Method 4: Find by image src comparison
-    else if (variant.featured_image && variant.featured_image.src) {
-      const variantImageSrc = variant.featured_image.src;
-      const slides = gallery.querySelectorAll('.product-gallery__slide');
-      
-      slides.forEach((slide, index) => {
-        const slideImg = slide.querySelector('img');
-        if (slideImg && slideImg.src.includes(variantImageSrc.split('?')[0].split('/').pop())) {
-          targetMediaId = slide.dataset.mediaId;
-        }
-      });
+    if (!variant.featured_image) {
+      console.log('No featured image for variant', variant.title);
+      return;
     }
     
-    // If we found a target, switch to it
-    if (targetMediaId) {
-      const slides = gallery.querySelectorAll('.product-gallery__slide');
-      let found = false;
-      
-      slides.forEach((slide) => {
-        const slideMediaId = slide.dataset.mediaId;
-        const isMatch = String(slideMediaId) === String(targetMediaId);
-        
-        if (isMatch) {
-          slide.classList.add('is-active');
-          found = true;
-        } else {
-          slide.classList.remove('is-active');
+    const slides = gallery.querySelectorAll('.product-gallery__slide');
+    const variantImageSrc = variant.featured_image.src;
+    
+    // Extract filename from variant image src for comparison
+    // Shopify URLs: //cdn.shopify.com/s/files/.../filename.jpg?v=123
+    const getFilename = (url) => {
+      if (!url) return '';
+      // Remove query params and get filename
+      return url.split('?')[0].split('/').pop().toLowerCase();
+    };
+    
+    const variantFilename = getFilename(variantImageSrc);
+    let foundIndex = -1;
+    
+    // Method 1: Try to find by image filename match
+    slides.forEach((slide, index) => {
+      const slideImg = slide.querySelector('img');
+      if (slideImg) {
+        const slideFilename = getFilename(slideImg.src);
+        // Compare filenames (both should have same base name)
+        if (slideFilename && variantFilename && 
+            (slideFilename.includes(variantFilename.split('_')[0]) || 
+             variantFilename.includes(slideFilename.split('_')[0]))) {
+          foundIndex = index;
         }
-      });
-      
-      // Update thumbnails
-      if (found) {
-        thumbs.forEach(t => {
-          const thumbId = t.dataset.thumb;
-          t.classList.toggle('is-active', String(thumbId) === String(targetMediaId));
-        });
       }
+    });
+    
+    // Method 2: If not found, try by variant.featured_image.position
+    if (foundIndex === -1 && variant.featured_image.position) {
+      // Position is 1-indexed, array is 0-indexed
+      foundIndex = variant.featured_image.position - 1;
+    }
+    
+    // Method 3: Last resort - use variant position to guess image
+    if (foundIndex === -1) {
+      // Find variant index and use same index for image
+      const variantIndex = productJSON.variants.findIndex(v => v.id === variant.id);
+      if (variantIndex >= 0 && variantIndex < slides.length) {
+        foundIndex = variantIndex;
+      }
+    }
+    
+    // Apply the change
+    if (foundIndex >= 0 && foundIndex < slides.length) {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('is-active', index === foundIndex);
+      });
+      
+      thumbs.forEach((thumb, index) => {
+        thumb.classList.toggle('is-active', index === foundIndex);
+      });
+      
+      console.log('Switched to image index:', foundIndex, 'for variant:', variant.title);
     }
   }
 
