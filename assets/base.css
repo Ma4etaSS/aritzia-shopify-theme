@@ -933,3 +933,141 @@ img[loading="lazy"]:not([src*="data:"]) {
     display: none !important;
   }
 }
+
+/* =========================================
+   GLOBAL RESPONSIVE BREAKPOINTS
+   Mobile First Approach
+   ========================================= */
+
+/* Mobile (< 640px) */
+@media (max-width: 639px) {
+  :root {
+    --container-padding: 16px;
+    --header-height: 56px;
+    --announcement-height: 36px;
+  }
+  
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  /* Typography scaling */
+  h1, .h1 { font-size: 28px; }
+  h2, .h2 { font-size: 22px; }
+  h3, .h3 { font-size: 18px; }
+  
+  /* Product grid - 2 columns on mobile */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  /* Product card mobile */
+  .product-card__title {
+    font-size: 12px;
+  }
+  
+  .product-card__price {
+    font-size: 12px;
+  }
+  
+  /* Buttons full width on mobile */
+  .btn--mobile-full {
+    width: 100%;
+  }
+  
+  /* Hide quick add on mobile - use tap to go to product page */
+  .product-card__quick-add {
+    display: none !important;
+  }
+}
+
+/* Tablet Portrait (640px - 767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+  :root {
+    --container-padding: 24px;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+}
+
+/* Tablet Landscape (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --container-padding: 32px;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px !important;
+  }
+  
+  /* Hide desktop nav, show mobile menu toggle */
+  .header__nav {
+    display: none !important;
+  }
+}
+
+/* Desktop Small (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  :root {
+    --container-padding: 40px;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
+
+/* Desktop Large (1280px+) */
+@media (min-width: 1280px) {
+  :root {
+    --container-padding: 48px;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .btn {
+    min-height: 48px;
+    padding: 14px 24px;
+  }
+  
+  /* No hover effects on touch */
+  .product-card__image:hover img {
+    transform: none;
+  }
+  
+  .product-card__overlay {
+    display: none;
+  }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Safe area for mobile browsers (notch, etc) */
+@supports (padding: max(0px)) {
+  .header {
+    padding-left: max(var(--container-padding), env(safe-area-inset-left));
+    padding-right: max(var(--container-padding), env(safe-area-inset-right));
+  }
+  
+  .footer {
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
+  }
+}

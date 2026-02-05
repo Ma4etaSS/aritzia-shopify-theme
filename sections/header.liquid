@@ -446,12 +446,13 @@
   transform: rotate(180deg);
 }
 
-/* Mega Menu */
+/* Mega Menu - Full Width Desktop */
 .mega-menu {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: calc(var(--announcement-height) + var(--header-height));
   left: 0;
-  min-width: 700px;
+  right: 0;
+  width: 100vw;
   background: #ffffff;
   border: none;
   border-top: 1px solid #e5e5e5;
@@ -460,7 +461,7 @@
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.25s ease, visibility 0.25s ease;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .mega-menu.is-visible {
@@ -471,13 +472,16 @@
 
 .mega-menu__inner {
   display: flex;
-  padding: 40px 48px;
+  max-width: var(--container-max-width, 1400px);
+  margin: 0 auto;
+  padding: 40px var(--container-padding, 40px);
   gap: 48px;
   background: #ffffff;
 }
 
 .mega-menu__column {
-  min-width: 150px;
+  min-width: 140px;
+  flex-shrink: 0;
 }
 
 .mega-menu__heading {
@@ -545,6 +549,17 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* Mega Menu - Tablet (hide, use mobile menu) */
+@media (max-width: 1023px) {
+  .mega-menu {
+    display: none !important;
+  }
+  
+  .header__nav {
+    display: none;
+  }
 }
 
 /* Actions */
