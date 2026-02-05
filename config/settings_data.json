@@ -27,8 +27,24 @@
         "type": "header",
         "settings": {
           "menu": "main-menu",
-          "sticky_header": true,
-          "header_style": "solid"
+          "header_style": "transparent"
+        }
+      },
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "announcement-1": {
+            "type": "message",
+            "settings": {
+              "text": "Free shipping on orders over $150",
+              "link_text": "Shop Now"
+            }
+          }
+        },
+        "block_order": ["announcement-1"],
+        "settings": {
+          "background_color": "#000000",
+          "text_color": "#FFFFFF"
         }
       },
       "footer": {

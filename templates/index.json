@@ -1,45 +1,21 @@
 {
   "sections": {
-    "announcement-bar": {
-      "type": "announcement-bar",
-      "blocks": {
-        "announcement-1": {
-          "type": "message",
-          "settings": {
-            "text": "Free shipping on orders over $150",
-            "link_text": "Shop Now"
-          }
-        }
-      },
-      "block_order": ["announcement-1"],
-      "settings": {
-        "background_color": "#000000",
-        "text_color": "#FFFFFF",
-        "show_close": true
-      }
-    },
-    "hero-banner": {
+    "hero": {
       "type": "hero-banner",
       "blocks": {
         "slide-1": {
           "type": "slide",
           "settings": {
-            "heading": "Spring Collection 2026",
-            "subheading": "New Arrivals",
+            "subheading": "New Season",
+            "heading": "Spring Collection",
             "button_label": "Shop Now",
-            "button_style": "primary",
-            "content_position": "bottom-left",
+            "button_link": "/collections/all",
             "show_overlay": true,
-            "overlay_opacity": 30
+            "overlay_opacity": 40
           }
         }
       },
-      "block_order": ["slide-1"],
-      "settings": {
-        "height_mobile": 80,
-        "height_desktop": 90,
-        "text_color": "#FFFFFF"
-      }
+      "block_order": ["slide-1"]
     },
     "featured-collection-1": {
       "type": "featured-collection",
@@ -50,8 +26,7 @@
         "show_vendor": false,
         "show_secondary_image": true,
         "show_quick_add": true,
-        "show_view_all": true,
-        "show_view_all_bottom": false
+        "show_view_all": true
       }
     },
     "featured-collection-2": {
@@ -63,14 +38,12 @@
         "show_vendor": false,
         "show_secondary_image": true,
         "show_quick_add": true,
-        "show_view_all": true,
-        "show_view_all_bottom": false
+        "show_view_all": true
       }
     }
   },
   "order": [
-    "announcement-bar",
-    "hero-banner",
+    "hero",
     "featured-collection-1",
     "featured-collection-2"
   ]

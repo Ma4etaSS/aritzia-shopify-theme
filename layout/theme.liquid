@@ -25,21 +25,22 @@
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- endif -%}
 
-  {% comment %} CSS {% endcomment %}
+  {%- comment -%} Google Fonts {%- endcomment -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  {%- comment -%} CSS {%- endcomment -%}
   {{ 'base.css' | asset_url | stylesheet_tag }}
   {{ 'component-header.css' | asset_url | stylesheet_tag }}
   {{ 'component-footer.css' | asset_url | stylesheet_tag }}
   {{ 'component-card.css' | asset_url | stylesheet_tag }}
 
-  {% comment %} Preconnect to Shopify CDN {% endcomment %}
+  {%- comment -%} Preconnect to Shopify CDN {%- endcomment -%}
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
-
-  {% comment %} Preload critical assets {% endcomment %}
-  <link rel="preload" as="style" href="{{ 'base.css' | asset_url }}">
 
   {{ content_for_header }}
 
-  {% comment %} CSS Variables from Theme Settings {% endcomment %}
+  {%- comment -%} CSS Variables from Theme Settings {%- endcomment -%}
   <style>
     :root {
       --color-primary: {{ settings.color_primary }};
@@ -64,34 +65,60 @@
   </style>
 </head>
 
-<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}{% if template.name == 'index' %} has-transparent-header{% endif %}">
   <a class="skip-to-content-link visually-hidden" href="#MainContent">
     {{ 'accessibility.skip_to_content' | t }}
   </a>
 
-  {% comment %} Announcement Bar {% endcomment %}
+  {%- comment -%} Announcement Bar - Only one, positioned above header {%- endcomment -%}
   {% section 'announcement-bar' %}
 
-  {% comment %} Header {% endcomment %}
+  {%- comment -%} Header {%- endcomment -%}
   {% section 'header' %}
 
-  {% comment %} Main Content {% endcomment %}
+  {%- comment -%} Main Content {%- endcomment -%}
   <main id="MainContent" class="main-content" role="main" tabindex="-1">
     {{ content_for_layout }}
   </main>
 
-  {% comment %} Footer {% endcomment %}
+  {%- comment -%} Footer {%- endcomment -%}
   {% section 'footer' %}
 
-  {% comment %} Cart Drawer {% endcomment %}
+  {%- comment -%} Cart Drawer {%- endcomment -%}
   {% if settings.cart_type == 'drawer' %}
     {% render 'cart-drawer' %}
   {% endif %}
 
-  {% comment %} JavaScript {% endcomment %}
+  {%- comment -%} JavaScript {%- endcomment -%}
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 
-  {% comment %} Shopify Features {% endcomment %}
+  {%- comment -%} Header Scroll Behavior {%- endcomment -%}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const header = document.querySelector('[data-header]');
+      if (!header) return;
+      
+      let lastScroll = 0;
+      const scrollThreshold = 50;
+      
+      function updateHeader() {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > scrollThreshold) {
+          header.classList.add('header--scrolled');
+        } else {
+          header.classList.remove('header--scrolled');
+        }
+        
+        lastScroll = currentScroll;
+      }
+      
+      window.addEventListener('scroll', updateHeader, { passive: true });
+      updateHeader();
+    });
+  </script>
+
+  {%- comment -%} Shopify Features {%- endcomment -%}
   <script>
     window.shopUrl = '{{ request.origin }}';
     window.routes = {
@@ -100,10 +127,6 @@
       cart_update_url: '{{ routes.cart_update_url }}',
       cart_url: '{{ routes.cart_url }}',
       predictive_search_url: '{{ routes.predictive_search_url }}'
-    };
-    window.cartStrings = {
-      error: `{{ 'sections.cart.cart_error' | t }}`,
-      quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
     };
   </script>
 </body>
