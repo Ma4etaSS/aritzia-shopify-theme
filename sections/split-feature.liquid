@@ -1,0 +1,130 @@
+<section class="split-section">
+  {%- for block in section.blocks -%}
+    <div class="split-section__item {% if block.settings.light_text == false %}split-section__item--light{% endif %}" {{ block.shopify_attributes }}>
+      <div class="split-section__media">
+        {%- if block.settings.video != blank -%}
+          {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true }}
+        {%- elsif block.settings.image != blank -%}
+          <img 
+            src="{{ block.settings.image | image_url: width: 1000 }}"
+            srcset="{{ block.settings.image | image_url: width: 600 }} 600w,
+                    {{ block.settings.image | image_url: width: 800 }} 800w,
+                    {{ block.settings.image | image_url: width: 1000 }} 1000w"
+            sizes="(max-width: 767px) 100vw, 50vw"
+            alt="{{ block.settings.heading | escape }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          {%- if forloop.first -%}
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&h=1200&fit=crop" alt="{{ block.settings.heading | default: 'After Dark' }}" loading="lazy">
+          {%- else -%}
+            <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=1000&h=1200&fit=crop" alt="{{ block.settings.heading | default: 'New Essentials' }}" loading="lazy">
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+      <a href="{{ block.settings.link | default: '/collections/all' }}" class="split-section__content">
+        {%- if block.settings.subheading != blank -%}
+          <p class="split-section__subheading">{{ block.settings.subheading }}</p>
+        {%- endif -%}
+        {%- if block.settings.heading != blank -%}
+          <h2 class="split-section__heading">{{ block.settings.heading }}</h2>
+        {%- endif -%}
+      </a>
+    </div>
+  {%- else -%}
+    <!-- Default content when no blocks -->
+    <div class="split-section__item">
+      <div class="split-section__media">
+        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&h=1200&fit=crop" alt="Now Trending: After Dark" loading="lazy">
+      </div>
+      <a href="/collections/all" class="split-section__content">
+        <p class="split-section__subheading">Now Trending</p>
+        <h2 class="split-section__heading">After Dark</h2>
+      </a>
+    </div>
+    <div class="split-section__item split-section__item--light">
+      <div class="split-section__media">
+        <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=1000&h=1200&fit=crop" alt="New Essentials" loading="lazy">
+      </div>
+      <a href="/collections/all" class="split-section__content">
+        <p class="split-section__subheading">The Pre-Spring Collection</p>
+        <h2 class="split-section__heading">New Essentials</h2>
+      </a>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Split Feature",
+  "tag": "section",
+  "class": "section-split",
+  "max_blocks": 2,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "Now Trending"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "After Dark"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "light_text",
+          "label": "Light text (for dark images)",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split Feature",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "subheading": "Now Trending",
+            "heading": "After Dark",
+            "light_text": true
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "subheading": "The Pre-Spring Collection",
+            "heading": "New Essentials",
+            "light_text": false
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,211 +1,110 @@
-{%- comment -%}
-  Aritzia-style Hero Banner
-  ALWAYS shows content with fallback image
-{%- endcomment -%}
-
 {%- liquid
-  if section.blocks.size > 0
-    assign block = section.blocks.first
-    assign hero_heading = block.settings.heading | default: 'Spring Collection'
-    assign hero_subheading = block.settings.subheading | default: 'New Season'
-    assign hero_button = block.settings.button_label | default: 'Shop Now'
-    assign hero_link = block.settings.button_link | default: '/collections/all'
-    assign hero_image = block.settings.image
-    assign show_overlay = block.settings.show_overlay | default: true
-  else
-    assign hero_heading = 'Spring Collection'
-    assign hero_subheading = 'New Season'
-    assign hero_button = 'Shop Now'
-    assign hero_link = '/collections/all'
-    assign hero_image = nil
-    assign show_overlay = true
-  endif
+  assign hero_height = section.settings.height | default: 'full'
+  assign show_overlay = section.settings.show_overlay | default: true
 -%}
 
-<section class="hero">
-  {%- comment -%} Background {%- endcomment -%}
-  <div class="hero__bg">
-    {%- if hero_image != blank -%}
-      <img
-        src="{{ hero_image | image_url: width: 1920 }}"
-        alt="{{ hero_heading | escape }}"
-        class="hero__img"
-        loading="eager"
-      >
-    {%- else -%}
-      {%- comment -%} Fallback: Beautiful gradient + pattern {%- endcomment -%}
-      <div class="hero__fallback"></div>
-    {%- endif -%}
-  </div>
+<section class="hero hero--{{ hero_height }}" data-hero>
+  {%- if section.blocks.size > 0 -%}
+    {%- for block in section.blocks -%}
+      <div class="hero__slide {% if forloop.first %}is-active{% endif %}" {{ block.shopify_attributes }}>
+        <div class="hero__media">
+          {%- if block.settings.video != blank -%}
+            {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'hero__video' }}
+          {%- elsif block.settings.image != blank -%}
+            <img 
+              src="{{ block.settings.image | image_url: width: 1920 }}"
+              srcset="{{ block.settings.image | image_url: width: 800 }} 800w,
+                      {{ block.settings.image | image_url: width: 1200 }} 1200w,
+                      {{ block.settings.image | image_url: width: 1920 }} 1920w"
+              sizes="100vw"
+              alt="{{ block.settings.heading | escape }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              class="hero__image"
+            >
+          {%- else -%}
+            <!-- Fallback: Beautiful fashion photo from Unsplash -->
+            <img 
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80"
+              alt="{{ block.settings.heading | default: 'Spring Collection' | escape }}"
+              loading="eager"
+              class="hero__image"
+            >
+          {%- endif -%}
+        </div>
 
-  {%- comment -%} Overlay {%- endcomment -%}
-  {%- if show_overlay -%}
-    <div class="hero__overlay"></div>
-  {%- endif -%}
+        {%- if show_overlay -%}
+          <div class="hero__overlay"></div>
+        {%- endif -%}
 
-  {%- comment -%} Content {%- endcomment -%}
-  <div class="hero__content">
-    <div class="container">
-      <div class="hero__text">
-        <p class="hero__sub">{{ hero_subheading }}</p>
-        <h1 class="hero__title">{{ hero_heading }}</h1>
-        <a href="{{ hero_link }}" class="hero__btn">{{ hero_button }}</a>
+        <div class="hero__content">
+          {%- if block.settings.subheading != blank -%}
+            <p class="hero__subheading">{{ block.settings.subheading }}</p>
+          {%- elsif forloop.first -%}
+            <p class="hero__subheading">New Collection</p>
+          {%- endif -%}
+          
+          {%- if block.settings.heading != blank -%}
+            <h1 class="hero__heading">{{ block.settings.heading }}</h1>
+          {%- elsif forloop.first -%}
+            <h1 class="hero__heading">Work Wardrobe<br>Spring 26</h1>
+          {%- endif -%}
+          
+          {%- if block.settings.button_label != blank -%}
+            <a href="{{ block.settings.button_link | default: '/collections/all' }}" class="hero__cta">
+              {{ block.settings.button_label }}
+            </a>
+          {%- elsif forloop.first -%}
+            <a href="/collections/all" class="hero__cta">Shop Now</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- else -%}
+    <!-- Default hero when no blocks configured -->
+    <div class="hero__slide is-active">
+      <div class="hero__media">
+        <img 
+          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80"
+          alt="Work Wardrobe Spring 26"
+          loading="eager"
+          class="hero__image"
+        >
+      </div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content">
+        <p class="hero__subheading">New Collection</p>
+        <h1 class="hero__heading">Work Wardrobe<br>Spring 26</h1>
+        <a href="/collections/all" class="hero__cta">Shop Now</a>
       </div>
     </div>
+  {%- endif -%}
+
+  <!-- Pause/Play Button -->
+  <div class="hero__controls">
+    <button class="hero__pause" type="button" aria-label="Pause slideshow">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16"/>
+        <rect x="14" y="4" width="4" height="16"/>
+      </svg>
+    </button>
   </div>
 </section>
 
 <style>
-/* Hero - Full Screen */
 .hero {
-  position: relative;
-  width: 100%;
+  margin-top: 0;
   height: 100vh;
-  min-height: 500px;
-  max-height: 1000px;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
-/* Background */
-.hero__bg {
+.hero__slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
-.hero__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
-
-/* Fallback gradient background */
-.hero__fallback {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, 
-    #1a1a2e 0%, 
-    #16213e 25%,
-    #0f3460 50%,
-    #1a1a2e 75%,
-    #0d0d0d 100%
-  );
-  background-size: 200% 200%;
-  animation: gradientMove 10s ease infinite;
-}
-
-.hero__fallback::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 60%);
-}
-
-@keyframes gradientMove {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-/* Overlay */
-.hero__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.5) 0%,
-    rgba(0,0,0,0.2) 30%,
-    rgba(0,0,0,0) 60%
-  );
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Content */
-.hero__content {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  padding-bottom: 60px;
-}
-
-@media (min-width: 768px) {
-  .hero__content {
-    padding-bottom: 80px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .hero__content {
-    padding-bottom: 100px;
-  }
-}
-
-.hero__text {
-  max-width: 600px;
-  color: #fff;
-}
-
-.hero__sub {
-  font-size: 11px;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  margin: 0 0 12px 0;
-  opacity: 0.9;
-}
-
-.hero__title {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 32px;
-  font-weight: 400;
-  line-height: 1.1;
-  margin: 0 0 24px 0;
-  letter-spacing: -0.02em;
-}
-
-@media (min-width: 768px) {
-  .hero__title {
-    font-size: 48px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .hero__title {
-    font-size: 64px;
-  }
-}
-
-.hero__btn {
-  display: inline-block;
-  padding: 14px 36px;
-  background: #fff;
-  color: #000;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.hero__btn:hover {
-  background: #000;
-  color: #fff;
+.hero__slide.is-active {
   opacity: 1;
 }
 </style>
@@ -213,49 +112,80 @@
 {% schema %}
 {
   "name": "Hero Banner",
-  "class": "hero-section",
   "tag": "section",
-  "settings": [],
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "full", "label": "Full screen" },
+        { "value": "large", "label": "Large" },
+        { "value": "medium", "label": "Medium" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Change slides every",
+      "default": 5
+    }
+  ],
   "blocks": [
     {
       "type": "slide",
       "name": "Slide",
-      "limit": 1,
       "settings": [
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Background image"
+          "label": "Image"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
         },
         {
           "type": "text",
           "id": "subheading",
           "label": "Subheading",
-          "default": "New Season"
+          "default": "New Collection"
         },
         {
           "type": "text",
           "id": "heading",
           "label": "Heading",
-          "default": "Spring Collection"
+          "default": "Work Wardrobe Spring 26"
         },
         {
           "type": "text",
           "id": "button_label",
-          "label": "Button text",
+          "label": "Button label",
           "default": "Shop Now"
         },
         {
           "type": "url",
           "id": "button_link",
-          "label": "Button link",
-          "default": "/collections/all"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_overlay",
-          "label": "Show overlay",
-          "default": true
+          "label": "Button link"
         }
       ]
     }
@@ -265,7 +195,12 @@
       "name": "Hero Banner",
       "blocks": [
         {
-          "type": "slide"
+          "type": "slide",
+          "settings": {
+            "subheading": "New Collection",
+            "heading": "Work Wardrobe Spring 26",
+            "button_label": "Shop Now"
+          }
         }
       ]
     }

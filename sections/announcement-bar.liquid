@@ -1,88 +1,55 @@
-{%- comment -%}
-  Announcement Bar - Always shows with fallback
-{%- endcomment -%}
-
-{%- liquid
-  if section.blocks.size > 0
-    assign message = section.blocks.first.settings.text
-    assign link_text = section.blocks.first.settings.link_text
-    assign link = section.blocks.first.settings.link
-  else
-    assign message = 'Free shipping on orders over $150'
-    assign link_text = 'Shop Now'
-    assign link = '/collections/all'
-  endif
--%}
-
-<div class="announcement" style="background: {{ section.settings.background_color | default: '#000' }}; color: {{ section.settings.text_color | default: '#fff' }};">
-  <div class="announcement__content">
-    <span class="announcement__text">{{ message }}</span>
-    {%- if link_text != blank -%}
-      <a href="{{ link | default: '/collections/all' }}" class="announcement__link">{{ link_text }}</a>
-    {%- endif -%}
+{%- if section.settings.show_announcement -%}
+<div class="announcement-bar" data-announcement>
+  <div class="container">
+    <p>
+      {{ section.settings.text | default: 'Free shipping on orders over $150' }}
+      {%- if section.settings.link_text != blank -%}
+        <a href="{{ section.settings.link | default: '/collections/all' }}">{{ section.settings.link_text }}</a>
+      {%- endif -%}
+    </p>
   </div>
-  <button type="button" class="announcement__close" aria-label="Close" onclick="this.parentElement.style.display='none'">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M18 6L6 18M6 6l12 12"/>
-    </svg>
-  </button>
 </div>
+{%- endif -%}
 
 <style>
-.announcement {
-  position: relative;
-  padding: 10px 40px;
-  text-align: center;
-  font-size: 13px;
-}
-
-.announcement__content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.announcement__text {
-  font-weight: 400;
-}
-
-.announcement__link {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.announcement__link:hover {
-  opacity: 0.8;
-}
-
-.announcement__close {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  padding: 4px;
-  opacity: 0.7;
-}
-
-.announcement__close:hover {
-  opacity: 1;
-}
+  :root {
+    --announcement-height: {% if section.settings.show_announcement %}40px{% else %}0px{% endif %};
+  }
 </style>
 
 {% schema %}
 {
-  "name": "Announcement bar",
+  "name": "Announcement Bar",
+  "tag": "section",
+  "class": "section-announcement",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Free shipping on orders over $150"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
     {
       "type": "color",
       "id": "background_color",
-      "label": "Background",
+      "label": "Background color",
       "default": "#000000"
     },
     {
@@ -91,38 +58,6 @@
       "label": "Text color",
       "default": "#ffffff"
     }
-  ],
-  "blocks": [
-    {
-      "type": "message",
-      "name": "Message",
-      "settings": [
-        {
-          "type": "text",
-          "id": "text",
-          "label": "Text",
-          "default": "Free shipping on orders over $150"
-        },
-        {
-          "type": "text",
-          "id": "link_text",
-          "label": "Link text",
-          "default": "Shop Now"
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "Link"
-        }
-      ]
-    }
-  ],
-  "default": {
-    "blocks": [
-      {
-        "type": "message"
-      }
-    ]
-  }
+  ]
 }
 {% endschema %}

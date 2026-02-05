@@ -1,0 +1,131 @@
+<section class="trending">
+  <div class="container">
+    <div class="trending__header">
+      <h2 class="trending__title">{{ section.settings.heading | default: 'Trending Now' }}</h2>
+    </div>
+
+    <div class="trending__grid">
+      {%- for block in section.blocks -%}
+        <article class="trending__card" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link | default: '/collections/all' }}">
+            <div class="trending__card-image">
+              {%- if block.settings.image != blank -%}
+                <img 
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                          {{ block.settings.image | image_url: width: 600 }} 600w"
+                  sizes="(max-width: 767px) 50vw, 25vw"
+                  alt="{{ block.settings.title | escape }}"
+                  loading="lazy"
+                >
+              {%- else -%}
+                {%- case forloop.index -%}
+                  {%- when 1 -%}
+                    <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'New This Week' }}" loading="lazy">
+                  {%- when 2 -%}
+                    <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'Jackets & Coats' }}" loading="lazy">
+                  {%- when 3 -%}
+                    <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'Dresses' }}" loading="lazy">
+                  {%- when 4 -%}
+                    <img src="https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'Shirts & Blouses' }}" loading="lazy">
+                  {%- else -%}
+                    <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop" alt="{{ block.settings.title | escape }}" loading="lazy">
+                {%- endcase -%}
+              {%- endif -%}
+            </div>
+          </a>
+          <h3 class="trending__card-title">
+            <a href="{{ block.settings.link | default: '/collections/all' }}">
+              {{ block.settings.title | default: 'Category' }}
+            </a>
+          </h3>
+        </article>
+      {%- else -%}
+        <!-- Default cards when no blocks configured -->
+        <article class="trending__card">
+          <a href="/collections/all">
+            <div class="trending__card-image">
+              <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="New This Week" loading="lazy">
+            </div>
+          </a>
+          <h3 class="trending__card-title"><a href="/collections/all">New This Week</a></h3>
+        </article>
+        <article class="trending__card">
+          <a href="/collections/all">
+            <div class="trending__card-image">
+              <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop" alt="Jackets & Coats" loading="lazy">
+            </div>
+          </a>
+          <h3 class="trending__card-title"><a href="/collections/all">Jackets & Coats</a></h3>
+        </article>
+        <article class="trending__card">
+          <a href="/collections/all">
+            <div class="trending__card-image">
+              <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop" alt="Dresses" loading="lazy">
+            </div>
+          </a>
+          <h3 class="trending__card-title"><a href="/collections/all">Dresses</a></h3>
+        </article>
+        <article class="trending__card">
+          <a href="/collections/all">
+            <div class="trending__card-image">
+              <img src="https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=600&h=800&fit=crop" alt="Shirts & Blouses" loading="lazy">
+            </div>
+          </a>
+          <h3 class="trending__card-title"><a href="/collections/all">Shirts & Blouses</a></h3>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trending Now",
+  "tag": "section",
+  "class": "section-trending",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Trending Now"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Category"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trending Now",
+      "blocks": [
+        { "type": "category", "settings": { "title": "New This Week" } },
+        { "type": "category", "settings": { "title": "Jackets & Coats" } },
+        { "type": "category", "settings": { "title": "Dresses" } },
+        { "type": "category", "settings": { "title": "Shirts & Blouses" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

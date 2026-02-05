@@ -1,97 +1,73 @@
 <!DOCTYPE html>
-<html lang="{{ request.locale.iso_code }}">
+<html class="no-js" lang="{{ request.locale.iso_code }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#000000">
-  
-  <title>
-    {{ page_title }}{% unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}
-  </title>
-
-  {%- if page_description -%}
-    <meta name="description" content="{{ page_description | escape }}">
-  {%- endif -%}
-
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="">
   <link rel="canonical" href="{{ canonical_url }}">
 
   {%- if settings.favicon != blank -%}
-    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- endif -%}
 
-  {%- comment -%} Google Fonts {%- endcomment -%}
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
 
-  {%- comment -%} CSS {%- endcomment -%}
+  <!-- Fonts - Similar to Aritzia -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
   {{ 'base.css' | asset_url | stylesheet_tag }}
-
+  
   {{ content_for_header }}
 
   <style>
     :root {
-      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-heading: 'Playfair Display', Georgia, serif;
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --color-background: #ffffff;
+      --color-foreground: #000000;
+      --color-text: #000000;
+      --color-text-muted: #666666;
+      --color-border: #e5e5e5;
+      --header-height: 60px;
+      --announcement-height: 40px;
     }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    body {
-      font-family: var(--font-body);
-      font-size: 14px;
-      line-height: 1.5;
-      color: #000;
-      background: #fff;
-      -webkit-font-smoothing: antialiased;
+    @media (min-width: 1024px) {
+      :root {
+        --header-height: 70px;
+      }
     }
-    
-    .container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    
-    @media (min-width: 768px) {
-      .container { padding: 0 40px; }
-    }
-    
-    img { max-width: 100%; height: auto; display: block; }
-    a { color: inherit; text-decoration: none; }
-    button { font-family: inherit; }
   </style>
 </head>
 
-<body>
-  {%- comment -%} Announcement Bar {%- endcomment -%}
-  {% section 'announcement-bar' %}
+<body class="template-{{ template.name }}">
+  <a class="skip-to-content" href="#MainContent">Skip to content</a>
 
-  {%- comment -%} Header {%- endcomment -%}
+  {% section 'announcement-bar' %}
   {% section 'header' %}
 
-  {%- comment -%} Main Content {%- endcomment -%}
-  <main id="main" role="main">
+  <main id="MainContent" class="main-content" role="main">
     {{ content_for_layout }}
   </main>
 
-  {%- comment -%} Footer {%- endcomment -%}
   {% section 'footer' %}
 
-  {%- comment -%} Scripts {%- endcomment -%}
-  <script>
-    // Scroll handler for header
-    document.addEventListener('DOMContentLoaded', function() {
-      const header = document.querySelector('[data-header]');
-      if (header) {
-        window.addEventListener('scroll', function() {
-          if (window.scrollY > 50) {
-            header.classList.add('is-scrolled');
-          } else {
-            header.classList.remove('is-scrolled');
-          }
-        }, { passive: true });
-      }
-    });
-  </script>
+  {{ 'theme.js' | asset_url | script_tag }}
 </body>
 </html>

@@ -1,235 +1,226 @@
-{%- comment -%}
-  Aritzia-style Featured Collection
-  - Section heading with optional link
-  - Product grid
-  - "View All" button
-{%- endcomment -%}
-
 {%- liquid
   assign collection = collections[section.settings.collection]
   assign products_count = section.settings.products_count | default: 8
 -%}
 
-<section class="featured-collection section">
-  <div class="featured-collection__container container">
-    
-    {% comment %} Section Header {% endcomment %}
-    <div class="featured-collection__header">
-      <div class="featured-collection__header-content">
+<section class="featured-collection">
+  <div class="container">
+    {%- if section.settings.heading != blank -%}
+      <div class="featured-collection__header">
         {%- if section.settings.subheading != blank -%}
           <p class="featured-collection__subheading">{{ section.settings.subheading }}</p>
         {%- endif -%}
-        <h2 class="featured-collection__heading">
-          {%- if section.settings.heading != blank -%}
-            {{ section.settings.heading }}
-          {%- elsif collection -%}
-            {{ collection.title }}
-          {%- else -%}
-            Featured Collection
-          {%- endif -%}
-        </h2>
-        {%- if section.settings.description != blank -%}
-          <div class="featured-collection__description">{{ section.settings.description }}</div>
-        {%- endif -%}
-      </div>
-      {%- if section.settings.show_view_all and collection -%}
-        <a href="{{ collection.url }}" class="featured-collection__view-all link-underline">
-          View All
-        </a>
-      {%- endif -%}
-    </div>
-
-    {% comment %} Product Grid {% endcomment %}
-    <div class="product-grid">
-      {%- if collection -%}
-        {%- for product in collection.products limit: products_count -%}
-          <div class="product-grid__item">
-            {% render 'product-card', 
-              product: product, 
-              show_vendor: section.settings.show_vendor,
-              show_secondary_image: section.settings.show_secondary_image,
-              show_quick_add: section.settings.show_quick_add,
-              lazy_load: true
-            %}
-          </div>
-        {%- endfor -%}
-      {%- else -%}
-        {%- for i in (1..products_count) -%}
-          <div class="product-grid__item">
-            <article class="product-card">
-              <div class="product-card__media aspect-portrait">
-                <div class="product-card__placeholder">
-                  {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
-                </div>
-              </div>
-              <div class="product-card__info">
-                <h3 class="product-card__title">Example Product {{ i }}</h3>
-                <div class="product-card__price">
-                  <div class="price">
-                    <span class="price__regular">{{ 9999 | money }}</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-        {%- endfor -%}
-      {%- endif -%}
-    </div>
-
-    {% comment %} View All Button (Bottom) {% endcomment %}
-    {%- if section.settings.show_view_all_bottom and collection -%}
-      <div class="featured-collection__footer">
-        <a href="{{ collection.url }}" class="btn btn-secondary">
-          View All {{ collection.title }}
-        </a>
+        <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
       </div>
     {%- endif -%}
 
+    <div class="product-grid">
+      {%- if collection != blank and collection.products.size > 0 -%}
+        {%- for product in collection.products limit: products_count -%}
+          <article class="product-card">
+            <a href="{{ product.url }}">
+              <div class="product-card__image">
+                {%- if product.featured_image != blank -%}
+                  <img 
+                    src="{{ product.featured_image | image_url: width: 600 }}"
+                    srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
+                            {{ product.featured_image | image_url: width: 600 }} 600w"
+                    sizes="(max-width: 767px) 50vw, 25vw"
+                    alt="{{ product.title | escape }}"
+                    loading="lazy"
+                    class="primary"
+                  >
+                  {%- if product.images[1] != blank -%}
+                    <img 
+                      src="{{ product.images[1] | image_url: width: 600 }}"
+                      alt="{{ product.title | escape }}"
+                      loading="lazy"
+                      class="secondary"
+                    >
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'placeholder' }}
+                {%- endif -%}
+                <button class="product-card__quick-add" type="button">Quick Add</button>
+              </div>
+            </a>
+            <div class="product-card__info">
+              <h3 class="product-card__title">
+                <a href="{{ product.url }}">{{ product.title }}</a>
+              </h3>
+              <p class="product-card__price">{{ product.price | money }}</p>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        <!-- Placeholder products -->
+        {%- for i in (1..8) -%}
+          <article class="product-card">
+            <a href="/collections/all">
+              <div class="product-card__image">
+                {%- case i -%}
+                  {%- when 1 -%}
+                    <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=800&fit=crop" alt="Cropped Cardigan" loading="lazy" class="primary">
+                  {%- when 2 -%}
+                    <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop" alt="Trench Coat" loading="lazy" class="primary">
+                  {%- when 3 -%}
+                    <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&h=800&fit=crop" alt="Blue Sweater" loading="lazy" class="primary">
+                  {%- when 4 -%}
+                    <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="Grey Blazer" loading="lazy" class="primary">
+                  {%- when 5 -%}
+                    <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop" alt="Black Dress" loading="lazy" class="primary">
+                  {%- when 6 -%}
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop" alt="Midi Dress" loading="lazy" class="primary">
+                  {%- when 7 -%}
+                    <img src="https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=600&h=800&fit=crop" alt="White Blouse" loading="lazy" class="primary">
+                  {%- when 8 -%}
+                    <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=600&h=800&fit=crop" alt="Beige Jacket" loading="lazy" class="primary">
+                {%- endcase -%}
+                <button class="product-card__quick-add" type="button">Quick Add</button>
+              </div>
+            </a>
+            <div class="product-card__info">
+              <h3 class="product-card__title">
+                <a href="/collections/all">
+                  {%- case i -%}
+                    {%- when 1 -%}The Cropped Cardigan
+                    {%- when 2 -%}The Classic Trench
+                    {%- when 3 -%}Cashmere Crew Sweater
+                    {%- when 4 -%}The Oversized Blazer
+                    {%- when 5 -%}The Little Black Dress
+                    {%- when 6 -%}Slip Midi Dress
+                    {%- when 7 -%}Poplin Button-Up
+                    {%- when 8 -%}The Cocoon Coat
+                  {%- endcase -%}
+                </a>
+              </h3>
+              <p class="product-card__price">
+                {%- case i -%}
+                  {%- when 1 -%}$148.00
+                  {%- when 2 -%}$298.00
+                  {%- when 3 -%}$198.00
+                  {%- when 4 -%}$248.00
+                  {%- when 5 -%}$178.00
+                  {%- when 6 -%}$168.00
+                  {%- when 7 -%}$98.00
+                  {%- when 8 -%}$398.00
+                {%- endcase -%}
+              </p>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_view_all -%}
+      <div class="featured-collection__footer">
+        <a href="{{ collection.url | default: '/collections/all' }}" class="featured-collection__view-all">
+          View All
+        </a>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
 <style>
+.featured-collection {
+  padding: 60px 0;
+}
+
+@media (min-width: 1024px) {
   .featured-collection {
-    padding: var(--spacing-sections) 0;
+    padding: 80px 0;
   }
+}
 
-  .featured-collection__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
-  }
+.featured-collection__header {
+  margin-bottom: 32px;
+}
 
-  @media (min-width: 768px) {
-    .featured-collection__header {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-  }
+.featured-collection__subheading {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 8px;
+}
 
-  .featured-collection__subheading {
-    font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-widest);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-2);
-  }
+.featured-collection__heading {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 400;
+}
 
+@media (min-width: 768px) {
   .featured-collection__heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-    font-weight: var(--font-normal);
+    font-size: 32px;
   }
+}
 
-  @media (min-width: 768px) {
-    .featured-collection__heading {
-      font-size: var(--text-4xl);
-    }
-  }
+.featured-collection__footer {
+  text-align: center;
+  margin-top: 48px;
+}
 
-  .featured-collection__description {
-    margin-top: var(--space-3);
-    color: var(--color-text-secondary);
-    max-width: 600px;
-  }
+.featured-collection__view-all {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #000;
+  transition: opacity 0.3s;
+}
 
-  .featured-collection__description p {
-    margin: 0;
-  }
-
-  .featured-collection__view-all {
-    font-size: var(--text-sm);
-    flex-shrink: 0;
-  }
-
-  .featured-collection__footer {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-10);
-  }
+.featured-collection__view-all:hover {
+  opacity: 0.6;
+}
 </style>
 
 {% schema %}
 {
-  "name": "Featured collection",
+  "name": "Featured Collection",
+  "tag": "section",
   "class": "section-featured-collection",
   "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Just Dropped"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "New Arrivals"
+    },
     {
       "type": "collection",
       "id": "collection",
       "label": "Collection"
     },
     {
-      "type": "header",
-      "content": "Header"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Subheading"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading"
-    },
-    {
-      "type": "richtext",
-      "id": "description",
-      "label": "Description"
-    },
-    {
-      "type": "header",
-      "content": "Products"
-    },
-    {
       "type": "range",
       "id": "products_count",
-      "label": "Number of products",
       "min": 4,
       "max": 16,
       "step": 4,
-      "default": 8
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show vendor",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_secondary_image",
-      "label": "Show secondary image on hover",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_quick_add",
-      "label": "Show quick add button",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "View all"
+      "default": 8,
+      "label": "Products to show"
     },
     {
       "type": "checkbox",
       "id": "show_view_all",
-      "label": "Show \"View all\" link in header",
+      "label": "Show 'View All' button",
       "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_view_all_bottom",
-      "label": "Show \"View all\" button at bottom",
-      "default": false
     }
   ],
   "presets": [
     {
-      "name": "Featured collection"
+      "name": "Featured Collection"
     }
   ]
 }

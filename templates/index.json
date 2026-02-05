@@ -3,35 +3,93 @@
     "hero": {
       "type": "hero-banner",
       "blocks": {
-        "slide_1": {
+        "slide-1": {
           "type": "slide",
           "settings": {
-            "heading": "Spring Collection",
-            "subheading": "New Season",
-            "button_label": "Shop Now",
-            "button_link": "shopify://collections/all",
-            "show_overlay": true
+            "subheading": "New Collection",
+            "heading": "Work Wardrobe Spring 26",
+            "button_label": "Shop Now"
           }
         }
       },
-      "block_order": ["slide_1"],
+      "block_order": ["slide-1"],
+      "settings": {
+        "height": "full",
+        "show_overlay": true,
+        "autoplay": true,
+        "autoplay_speed": 5
+      }
+    },
+    "trending": {
+      "type": "trending-now",
+      "blocks": {
+        "cat-1": {
+          "type": "category",
+          "settings": {
+            "title": "New This Week"
+          }
+        },
+        "cat-2": {
+          "type": "category",
+          "settings": {
+            "title": "Jackets & Coats"
+          }
+        },
+        "cat-3": {
+          "type": "category",
+          "settings": {
+            "title": "Dresses"
+          }
+        },
+        "cat-4": {
+          "type": "category",
+          "settings": {
+            "title": "Shirts & Blouses"
+          }
+        }
+      },
+      "block_order": ["cat-1", "cat-2", "cat-3", "cat-4"],
+      "settings": {
+        "heading": "Trending Now"
+      }
+    },
+    "split-feature": {
+      "type": "split-feature",
+      "blocks": {
+        "feature-1": {
+          "type": "feature",
+          "settings": {
+            "subheading": "Now Trending",
+            "heading": "After Dark",
+            "light_text": true
+          }
+        },
+        "feature-2": {
+          "type": "feature",
+          "settings": {
+            "subheading": "The Pre-Spring Collection",
+            "heading": "New Essentials",
+            "light_text": false
+          }
+        }
+      },
+      "block_order": ["feature-1", "feature-2"],
       "settings": {}
     },
-    "featured": {
+    "featured-collection": {
       "type": "featured-collection",
       "settings": {
+        "subheading": "Just Dropped",
         "heading": "New Arrivals",
-        "subheading": "Just In",
         "products_count": 8,
-        "show_vendor": false,
-        "show_secondary_image": true,
-        "show_quick_add": true,
         "show_view_all": true
       }
     }
   },
   "order": [
     "hero",
-    "featured"
+    "trending",
+    "split-feature",
+    "featured-collection"
   ]
 }
