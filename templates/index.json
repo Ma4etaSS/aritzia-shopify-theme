@@ -3,43 +3,35 @@
     "hero": {
       "type": "hero-banner",
       "blocks": {
-        "slide-1": {
+        "slide_1": {
           "type": "slide",
           "settings": {
-            "subheading": "New Collection",
-            "heading": "Spring 2026",
+            "heading": "Spring Collection",
+            "subheading": "New Season",
             "button_label": "Shop Now",
-            "button_link": "/collections/all",
-            "show_overlay": true,
-            "overlay_opacity": 40
+            "button_link": "shopify://collections/all",
+            "show_overlay": true
           }
         }
       },
-      "block_order": ["slide-1"],
+      "block_order": ["slide_1"],
       "settings": {}
     },
-    "featured-collection": {
+    "featured": {
       "type": "featured-collection",
       "settings": {
-        "subheading": "Just In",
         "heading": "New Arrivals",
+        "subheading": "Just In",
         "products_count": 8,
         "show_vendor": false,
         "show_secondary_image": true,
         "show_quick_add": true,
         "show_view_all": true
       }
-    },
-    "collection-grid": {
-      "type": "collection-grid",
-      "settings": {
-        "heading": "Shop by Category"
-      }
     }
   },
   "order": [
     "hero",
-    "featured-collection",
-    "collection-grid"
+    "featured"
   ]
 }

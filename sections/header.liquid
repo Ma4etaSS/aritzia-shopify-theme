@@ -1,193 +1,367 @@
 {%- comment -%}
   Aritzia-style Header
-  - Fixed position, transparent background
-  - Logo left, icons right
-  - Navigation below
-  - White background on scroll
+  - Fixed position
+  - Transparent on hero, white on scroll
+  - Logo left, navigation center, icons right
 {%- endcomment -%}
 
-<header class="header{% if section.settings.header_style == 'transparent' %} header--transparent{% endif %}" data-header>
-  <div class="header__inner">
-    <div class="header__top container">
+<header class="site-header" data-header>
+  <div class="site-header__inner">
+    <div class="container site-header__container">
       
       {%- comment -%} Logo {%- endcomment -%}
-      <div class="header__logo">
-        <a href="{{ routes.root_url }}" class="header__logo-link" aria-label="{{ shop.name }}">
-          {%- if settings.logo != blank -%}
-            {%- assign logo_width = settings.logo_width | default: 120 -%}
-            <img
-              src="{{ settings.logo | image_url: width: logo_width }}"
-              srcset="{{ settings.logo | image_url: width: logo_width }} 1x, {{ settings.logo | image_url: width: logo_width | times: 2 }} 2x"
-              alt="{{ settings.logo.alt | default: shop.name | escape }}"
-              width="{{ logo_width }}"
-              height="auto"
-              loading="eager"
-              class="header__logo-image"
-            >
-          {%- else -%}
-            <span class="header__logo-text">{{ shop.name }}</span>
-          {%- endif -%}
-        </a>
-      </div>
+      <a href="{{ routes.root_url }}" class="site-header__logo">
+        {%- if settings.logo != blank -%}
+          <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" class="site-header__logo-img">
+        {%- else -%}
+          <span class="site-header__logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
 
-      {%- comment -%} Header Icons {%- endcomment -%}
-      <div class="header__icons">
-        {%- comment -%} Search {%- endcomment -%}
-        <button type="button" class="header__icon" aria-label="{{ 'general.search.search' | t }}" data-search-toggle>
+      {%- comment -%} Navigation {%- endcomment -%}
+      <nav class="site-header__nav">
+        {%- for link in linklists[section.settings.menu].links -%}
+          <a href="{{ link.url }}" class="site-header__nav-link">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+
+      {%- comment -%} Icons {%- endcomment -%}
+      <div class="site-header__icons">
+        <button type="button" class="site-header__icon" aria-label="Search" data-search-toggle>
           {% render 'icon-search' %}
-          <span class="header__icon-text">Search</span>
         </button>
-
-        {%- comment -%} Account {%- endcomment -%}
+        
         {%- if shop.customer_accounts_enabled -%}
-          <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__icon" aria-label="{{ 'customer.account.title' | t }}">
+          <a href="{{ routes.account_url }}" class="site-header__icon" aria-label="Account">
             {% render 'icon-account' %}
           </a>
         {%- endif -%}
-
-        {%- comment -%} Wishlist {%- endcomment -%}
-        <a href="/pages/wishlist" class="header__icon" aria-label="Wishlist">
-          {% render 'icon-heart' %}
-        </a>
-
-        {%- comment -%} Cart {%- endcomment -%}
-        <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart" aria-label="{{ 'sections.cart.title' | t }}" data-cart-toggle>
+        
+        <a href="{{ routes.cart_url }}" class="site-header__icon site-header__icon--cart" aria-label="Cart">
           {% render 'icon-cart' %}
           {%- if cart.item_count > 0 -%}
-            <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
+            <span class="site-header__cart-count">{{ cart.item_count }}</span>
           {%- endif -%}
         </a>
 
-        {%- comment -%} Mobile Menu Toggle {%- endcomment -%}
-        <button type="button" class="header__icon header__icon--menu" aria-label="Menu" aria-expanded="false" data-menu-toggle>
+        <button type="button" class="site-header__icon site-header__menu-toggle" aria-label="Menu" data-menu-toggle>
           {% render 'icon-menu' %}
         </button>
       </div>
 
     </div>
-
-    {%- comment -%} Desktop Navigation {%- endcomment -%}
-    <nav class="header__nav container" aria-label="Main navigation">
-      <ul class="header__nav-list" role="list">
-        {%- for link in section.settings.menu.links -%}
-          <li class="header__nav-item{% if link.links != blank %} has-dropdown{% endif %}">
-            {%- if link.links != blank -%}
-              <button 
-                type="button" 
-                class="header__nav-link"
-                aria-expanded="false"
-                aria-controls="dropdown-{{ forloop.index }}"
-                data-dropdown-trigger
-              >
-                {{ link.title }}
-              </button>
-              <div id="dropdown-{{ forloop.index }}" class="header__dropdown" data-dropdown>
-                <div class="header__dropdown-inner container">
-                  <ul class="header__dropdown-list" role="list">
-                    {%- for childlink in link.links -%}
-                      <li class="header__dropdown-item">
-                        <a href="{{ childlink.url }}" class="header__dropdown-link">
-                          {{ childlink.title }}
-                        </a>
-                        {%- if childlink.links != blank -%}
-                          <ul class="header__dropdown-sublist" role="list">
-                            {%- for grandchildlink in childlink.links -%}
-                              <li>
-                                <a href="{{ grandchildlink.url }}" class="header__dropdown-sublink">
-                                  {{ grandchildlink.title }}
-                                </a>
-                              </li>
-                            {%- endfor -%}
-                          </ul>
-                        {%- endif -%}
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                </div>
-              </div>
-            {%- else -%}
-              <a href="{{ link.url }}" class="header__nav-link">
-                {{ link.title }}
-              </a>
-            {%- endif -%}
-          </li>
-        {%- endfor -%}
-      </ul>
-    </nav>
   </div>
-
-  {%- comment -%} Search Overlay {%- endcomment -%}
-  <div class="search-overlay" data-search-overlay hidden>
-    <div class="search-overlay__container container">
-      <form action="{{ routes.search_url }}" method="get" role="search" class="search-overlay__form">
-        <label for="Search" class="visually-hidden">{{ 'general.search.search' | t }}</label>
-        <input
-          type="search"
-          name="q"
-          id="Search"
-          value="{{ search.terms | escape }}"
-          placeholder="{{ 'general.search.placeholder' | t }}"
-          class="search-overlay__input"
-          autocomplete="off"
-        >
-        <button type="submit" class="search-overlay__submit">
-          {% render 'icon-search' %}
-        </button>
-        <button type="button" class="search-overlay__close" data-search-close>
-          {% render 'icon-close' %}
-        </button>
-      </form>
-    </div>
-  </div>
-
-  {%- comment -%} Mobile Menu {%- endcomment -%}
-  <div class="mobile-menu" data-mobile-menu hidden>
-    <div class="mobile-menu__header">
-      <button type="button" class="mobile-menu__close" aria-label="Close menu" data-menu-close>
-        {% render 'icon-close' %}
-      </button>
-    </div>
-    <nav class="mobile-menu__nav">
-      <ul class="mobile-menu__list" role="list">
-        {%- for link in section.settings.menu.links -%}
-          <li class="mobile-menu__item">
-            <a href="{{ link.url }}" class="mobile-menu__link">
-              {{ link.title }}
-            </a>
-          </li>
-        {%- endfor -%}
-      </ul>
-    </nav>
-  </div>
-  <div class="mobile-menu__overlay" data-menu-overlay hidden></div>
 </header>
+
+{%- comment -%} Mobile Menu {%- endcomment -%}
+<div class="mobile-nav" data-mobile-menu hidden>
+  <div class="mobile-nav__header">
+    <button type="button" class="mobile-nav__close" data-menu-close>
+      {% render 'icon-close' %}
+    </button>
+  </div>
+  <nav class="mobile-nav__links">
+    {%- for link in linklists[section.settings.menu].links -%}
+      <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+    {%- endfor -%}
+  </nav>
+</div>
+<div class="mobile-nav__overlay" data-menu-overlay hidden></div>
+
+<style>
+/* Header - Fixed & Transparent */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Transparent State (default on homepage) */
+.site-header {
+  background-color: transparent;
+  color: #fff;
+}
+
+/* Scrolled State */
+.site-header.is-scrolled {
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+}
+
+.site-header__inner {
+  padding: 16px 0;
+}
+
+@media (min-width: 1024px) {
+  .site-header__inner {
+    padding: 20px 0;
+  }
+}
+
+.site-header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.site-header__logo {
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.site-header__logo-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .site-header__logo-text {
+    font-size: 28px;
+  }
+}
+
+.site-header__logo-img {
+  height: 30px;
+  width: auto;
+}
+
+/* Navigation */
+.site-header__nav {
+  display: none;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .site-header__nav {
+    display: flex;
+  }
+}
+
+.site-header__nav-link {
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.site-header__nav-link:hover {
+  opacity: 0.7;
+}
+
+/* Icons */
+.site-header__icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .site-header__icons {
+    gap: 20px;
+  }
+}
+
+.site-header__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.site-header__icon:hover {
+  opacity: 0.7;
+}
+
+.site-header__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.site-header__icon--cart {
+  position: relative;
+}
+
+.site-header__cart-count {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+}
+
+.site-header.is-scrolled .site-header__cart-count {
+  background: #000;
+  color: #fff;
+}
+
+.site-header__menu-toggle {
+  display: flex;
+}
+
+@media (min-width: 1024px) {
+  .site-header__menu-toggle {
+    display: none;
+  }
+}
+
+/* Mobile Nav */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-nav.is-open {
+  transform: translateX(0);
+}
+
+.mobile-nav[hidden] {
+  display: block;
+}
+
+.mobile-nav__header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-nav__close {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.mobile-nav__close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-nav__links {
+  padding: 24px 16px;
+}
+
+.mobile-nav__link {
+  display: block;
+  padding: 12px 0;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-nav__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-nav__overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-nav__overlay[hidden] {
+  display: block;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const header = document.querySelector('[data-header]');
+  const mobileMenu = document.querySelector('[data-mobile-menu]');
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const menuClose = document.querySelector('[data-menu-close]');
+  const menuOverlay = document.querySelector('[data-menu-overlay]');
+
+  // Scroll handler
+  function handleScroll() {
+    if (window.scrollY > 50) {
+      header.classList.add('is-scrolled');
+    } else {
+      header.classList.remove('is-scrolled');
+    }
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+
+  // Mobile menu
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', function() {
+      mobileMenu.classList.add('is-open');
+      menuOverlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  if (menuClose) {
+    menuClose.addEventListener('click', closeMenu);
+  }
+
+  if (menuOverlay) {
+    menuOverlay.addEventListener('click', closeMenu);
+  }
+
+  function closeMenu() {
+    mobileMenu.classList.remove('is-open');
+    menuOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+});
+</script>
 
 {% schema %}
 {
   "name": "Header",
-  "class": "section-header",
   "settings": [
     {
       "type": "link_list",
       "id": "menu",
       "label": "Menu",
       "default": "main-menu"
-    },
-    {
-      "type": "select",
-      "id": "header_style",
-      "label": "Header style",
-      "options": [
-        {
-          "value": "transparent",
-          "label": "Transparent (for hero pages)"
-        },
-        {
-          "value": "solid",
-          "label": "Solid white"
-        }
-      ],
-      "default": "transparent"
     }
   ]
 }

@@ -1,331 +1,231 @@
 {%- comment -%}
   Aritzia-style Hero Banner
-  - Full viewport height (100vh)
-  - Text positioned at bottom left
-  - Elegant typography
+  ALWAYS shows content with fallback image
 {%- endcomment -%}
 
-<section class="hero" data-hero>
-  {%- if section.blocks.size > 0 -%}
-    {%- for block in section.blocks -%}
-      <div class="hero__slide{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
-        
-        {%- comment -%} Background Media {%- endcomment -%}
-        <div class="hero__media">
-          {%- if block.settings.video != blank -%}
-            {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'hero__video' }}
-          {%- elsif block.settings.image != blank -%}
-            <picture>
-              {%- if block.settings.image_mobile != blank -%}
-                <source media="(max-width: 767px)" srcset="{{ block.settings.image_mobile | image_url: width: 800 }}">
-              {%- endif -%}
-              <img
-                src="{{ block.settings.image | image_url: width: 1920 }}"
-                srcset="{{ block.settings.image | image_url: width: 1920 }} 1920w, {{ block.settings.image | image_url: width: 1440 }} 1440w"
-                alt="{{ block.settings.image.alt | default: block.settings.heading | escape }}"
-                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}"
-                class="hero__image"
-              >
-            </picture>
-          {%- else -%}
-            {%- comment -%} Fallback image from Unsplash {%- endcomment -%}
-            <img
-              src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&q=80"
-              alt="{{ block.settings.heading | default: 'Hero image' | escape }}"
-              loading="eager"
-              class="hero__image hero__image--fallback"
-            >
-          {%- endif -%}
-        </div>
+{%- liquid
+  if section.blocks.size > 0
+    assign block = section.blocks.first
+    assign hero_heading = block.settings.heading | default: 'Spring Collection'
+    assign hero_subheading = block.settings.subheading | default: 'New Season'
+    assign hero_button = block.settings.button_label | default: 'Shop Now'
+    assign hero_link = block.settings.button_link | default: '/collections/all'
+    assign hero_image = block.settings.image
+    assign show_overlay = block.settings.show_overlay | default: true
+  else
+    assign hero_heading = 'Spring Collection'
+    assign hero_subheading = 'New Season'
+    assign hero_button = 'Shop Now'
+    assign hero_link = '/collections/all'
+    assign hero_image = nil
+    assign show_overlay = true
+  endif
+-%}
 
-        {%- comment -%} Overlay {%- endcomment -%}
-        {%- if block.settings.show_overlay -%}
-          <div class="hero__overlay" style="--overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};"></div>
-        {%- endif -%}
+<section class="hero">
+  {%- comment -%} Background {%- endcomment -%}
+  <div class="hero__bg">
+    {%- if hero_image != blank -%}
+      <img
+        src="{{ hero_image | image_url: width: 1920 }}"
+        alt="{{ hero_heading | escape }}"
+        class="hero__img"
+        loading="eager"
+      >
+    {%- else -%}
+      {%- comment -%} Fallback: Beautiful gradient + pattern {%- endcomment -%}
+      <div class="hero__fallback"></div>
+    {%- endif -%}
+  </div>
 
-        {%- comment -%} Content - Bottom Left {%- endcomment -%}
-        <div class="hero__content container">
-          <div class="hero__text-block">
-            {%- if block.settings.subheading != blank -%}
-              <p class="hero__subheading">{{ block.settings.subheading }}</p>
-            {%- endif -%}
-            {%- if block.settings.heading != blank -%}
-              <h1 class="hero__heading">{{ block.settings.heading }}</h1>
-            {%- endif -%}
-            {%- if block.settings.text != blank -%}
-              <div class="hero__description">{{ block.settings.text }}</div>
-            {%- endif -%}
-            {%- if block.settings.button_label != blank -%}
-              <div class="hero__actions">
-                <a href="{{ block.settings.button_link | default: '#' }}" class="hero__button">
-                  {{ block.settings.button_label }}
-                </a>
-              </div>
-            {%- endif -%}
-          </div>
-        </div>
-      </div>
-    {%- endfor -%}
-  {%- else -%}
-    {%- comment -%} Default content when no blocks {%- endcomment -%}
-    <div class="hero__slide is-active">
-      <div class="hero__media">
-        <img
-          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&q=80"
-          alt="Spring Collection"
-          loading="eager"
-          class="hero__image"
-        >
-      </div>
-      <div class="hero__overlay"></div>
-      <div class="hero__content container">
-        <div class="hero__text-block">
-          <p class="hero__subheading">New Collection</p>
-          <h1 class="hero__heading">Spring 2026</h1>
-          <div class="hero__actions">
-            <a href="/collections/all" class="hero__button">Shop Now</a>
-          </div>
-        </div>
+  {%- comment -%} Overlay {%- endcomment -%}
+  {%- if show_overlay -%}
+    <div class="hero__overlay"></div>
+  {%- endif -%}
+
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="hero__content">
+    <div class="container">
+      <div class="hero__text">
+        <p class="hero__sub">{{ hero_subheading }}</p>
+        <h1 class="hero__title">{{ hero_heading }}</h1>
+        <a href="{{ hero_link }}" class="hero__btn">{{ hero_button }}</a>
       </div>
     </div>
-  {%- endif -%}
+  </div>
 </section>
 
 <style>
-  .hero {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    min-height: 600px;
-    overflow: hidden;
-  }
+/* Hero - Full Screen */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  max-height: 1000px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
 
-  .hero__slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-  }
+/* Background */
+.hero__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
 
-  .hero__slide.is-active {
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-  }
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
 
-  /* Media */
-  .hero__media {
-    position: absolute;
-    inset: 0;
-  }
+/* Fallback gradient background */
+.hero__fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #1a1a2e 0%, 
+    #16213e 25%,
+    #0f3460 50%,
+    #1a1a2e 75%,
+    #0d0d0d 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientMove 10s ease infinite;
+}
 
-  .hero__image,
-  .hero__video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
+.hero__fallback::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 60%);
+}
 
-  /* Placeholder - Elegant dark gradient */
-  .hero__placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      145deg,
-      #0a0a0a 0%,
-      #1a1a1a 30%,
-      #2d2d2d 60%,
-      #1a1a1a 80%,
-      #0a0a0a 100%
-    );
-    position: relative;
-  }
+@keyframes gradientMove {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
-  .hero__placeholder::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.03) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.02) 0%, transparent 40%);
-  }
+/* Overlay */
+.hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.5) 0%,
+    rgba(0,0,0,0.2) 30%,
+    rgba(0,0,0,0) 60%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
 
-  /* Overlay */
-  .hero__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.1) 40%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
+/* Content */
+.hero__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding-bottom: 60px;
+}
 
-  /* Content - Bottom Left */
+@media (min-width: 768px) {
   .hero__content {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: flex-end;
     padding-bottom: 80px;
   }
+}
 
-  @media (min-width: 768px) {
-    .hero__content {
-      padding-bottom: 100px;
-    }
+@media (min-width: 1024px) {
+  .hero__content {
+    padding-bottom: 100px;
   }
+}
 
-  .hero__text-block {
-    max-width: 600px;
-    color: #ffffff;
-  }
+.hero__text {
+  max-width: 600px;
+  color: #fff;
+}
 
-  .hero__subheading {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 16px;
-    opacity: 0.9;
-  }
+.hero__sub {
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin: 0 0 12px 0;
+  opacity: 0.9;
+}
 
-  .hero__heading {
-    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-    font-size: 36px;
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    margin: 0 0 20px 0;
-  }
+.hero__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0 0 24px 0;
+  letter-spacing: -0.02em;
+}
 
-  @media (min-width: 768px) {
-    .hero__heading {
-      font-size: 52px;
-    }
+@media (min-width: 768px) {
+  .hero__title {
+    font-size: 48px;
   }
+}
 
-  @media (min-width: 1024px) {
-    .hero__heading {
-      font-size: 64px;
-    }
+@media (min-width: 1024px) {
+  .hero__title {
+    font-size: 64px;
   }
+}
 
-  .hero__description {
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 24px;
-    opacity: 0.9;
-    max-width: 450px;
-  }
+.hero__btn {
+  display: inline-block;
+  padding: 14px 36px;
+  background: #fff;
+  color: #000;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
 
-  .hero__description p {
-    margin: 0;
-  }
-
-  .hero__actions {
-    display: flex;
-    gap: 16px;
-  }
-
-  .hero__button {
-    display: inline-block;
-    padding: 14px 32px;
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #000000;
-    background-color: #ffffff;
-    border: none;
-    text-decoration: none;
-    transition: all 0.3s ease;
-  }
-
-  .hero__button:hover {
-    background-color: #000000;
-    color: #ffffff;
-    opacity: 1;
-  }
-
-  /* Scroll indicator */
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 0.2; }
-  }
+.hero__btn:hover {
+  background: #000;
+  color: #fff;
+  opacity: 1;
+}
 </style>
 
 {% schema %}
 {
   "name": "Hero Banner",
-  "class": "section-hero",
+  "class": "hero-section",
+  "tag": "section",
   "settings": [],
   "blocks": [
     {
       "type": "slide",
       "name": "Slide",
+      "limit": 1,
       "settings": [
-        {
-          "type": "header",
-          "content": "Media"
-        },
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_mobile",
-          "label": "Mobile image"
-        },
-        {
-          "type": "video",
-          "id": "video",
-          "label": "Video (overrides image)"
-        },
-        {
-          "type": "header",
-          "content": "Overlay"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_overlay",
-          "label": "Show gradient overlay",
-          "default": true
-        },
-        {
-          "type": "range",
-          "id": "overlay_opacity",
-          "label": "Overlay opacity",
-          "min": 0,
-          "max": 100,
-          "step": 10,
-          "default": 40,
-          "unit": "%"
-        },
-        {
-          "type": "header",
-          "content": "Content"
+          "label": "Background image"
         },
         {
           "type": "text",
@@ -340,20 +240,22 @@
           "default": "Spring Collection"
         },
         {
-          "type": "richtext",
-          "id": "text",
-          "label": "Description"
-        },
-        {
           "type": "text",
           "id": "button_label",
-          "label": "Button label",
+          "label": "Button text",
           "default": "Shop Now"
         },
         {
           "type": "url",
           "id": "button_link",
-          "label": "Button link"
+          "label": "Button link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_overlay",
+          "label": "Show overlay",
+          "default": true
         }
       ]
     }
@@ -363,12 +265,7 @@
       "name": "Hero Banner",
       "blocks": [
         {
-          "type": "slide",
-          "settings": {
-            "subheading": "New Season",
-            "heading": "Spring Collection",
-            "button_label": "Shop Now"
-          }
+          "type": "slide"
         }
       ]
     }
