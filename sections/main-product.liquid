@@ -819,6 +819,9 @@
       addToCartText.textContent = 'Sold Out';
     }
     
+    // Update gallery image when variant changes
+    updateGalleryForVariant(variant);
+    
     // Update URL
     const url = new URL(window.location);
     url.searchParams.set('variant', variant.id);
@@ -827,6 +830,62 @@
 
   function formatMoney(cents) {
     return '$' + (cents / 100).toFixed(2);
+  }
+
+  function updateGalleryForVariant(variant) {
+    // Multiple ways to find the variant's image
+    let targetMediaId = null;
+    
+    // Method 1: Check variant.featured_media (object with id)
+    if (variant.featured_media && variant.featured_media.id) {
+      targetMediaId = variant.featured_media.id;
+    }
+    // Method 2: Check variant.featured_image (object with id)
+    else if (variant.featured_image && variant.featured_image.id) {
+      targetMediaId = variant.featured_image.id;
+    }
+    // Method 3: Check variant.featured_media as just ID number
+    else if (variant.featured_media && typeof variant.featured_media === 'number') {
+      targetMediaId = variant.featured_media;
+    }
+    // Method 4: Find by image src comparison
+    else if (variant.featured_image && variant.featured_image.src) {
+      const variantImageSrc = variant.featured_image.src;
+      const slides = gallery.querySelectorAll('.product-gallery__slide');
+      
+      slides.forEach((slide, index) => {
+        const slideImg = slide.querySelector('img');
+        if (slideImg && slideImg.src.includes(variantImageSrc.split('?')[0].split('/').pop())) {
+          targetMediaId = slide.dataset.mediaId;
+        }
+      });
+    }
+    
+    // If we found a target, switch to it
+    if (targetMediaId) {
+      const slides = gallery.querySelectorAll('.product-gallery__slide');
+      let found = false;
+      
+      slides.forEach((slide) => {
+        const slideMediaId = slide.dataset.mediaId;
+        const isMatch = String(slideMediaId) === String(targetMediaId);
+        
+        if (isMatch) {
+          slide.classList.add('is-active');
+          found = true;
+        } else {
+          slide.classList.remove('is-active');
+        }
+      });
+      
+      // Update thumbnails
+      if (found) {
+        thumbs.forEach(t => {
+          const thumbId = t.dataset.thumb;
+          t.classList.toggle('is-active', String(thumbId) === String(targetMediaId));
+        });
+      }
+    }
   }
 
   // Quantity
