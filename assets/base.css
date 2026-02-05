@@ -703,6 +703,49 @@ img[loading="lazy"]:not([src*="data:"]) {
 }
 
 /* =========================================
+   COLOR SWATCHES (Global)
+   ========================================= */
+
+.color-swatch,
+.product-option__color,
+.product-card__swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+/* All light colors need visible border */
+.color-swatch[style*="white"],
+.color-swatch[style*="#fff"],
+.color-swatch[style*="ivory"],
+.color-swatch[style*="cream"],
+.color-swatch[style*="snow"],
+.color-swatch[style*="beige"],
+.product-option__color[style*="white"],
+.product-option__color[style*="#fff"],
+.product-card__swatch[style*="white"],
+.product-card__swatch[style*="#fff"] {
+  border-color: #c0c0c0;
+}
+
+.color-swatch.is-active,
+.product-option__color.is-active,
+.product-card__swatch.is-active {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: 2px;
+}
+
+.color-swatch:hover,
+.product-option__color:hover,
+.product-card__swatch:hover {
+  transform: scale(1.1);
+}
+
+/* =========================================
    LOADING STATES
    ========================================= */
 

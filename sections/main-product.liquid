@@ -417,21 +417,42 @@
 
 .product-option__colors {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .product-option__color {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 2px solid transparent;
+  border: 1px solid #e0e0e0;
   outline: 2px solid transparent;
   outline-offset: 2px;
-  transition: outline-color 0.2s ease;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
 }
 
-.product-option__color.is-active,
+/* White color needs visible border */
+.product-option__color[style*="white"],
+.product-option__color[style*="#fff"],
+.product-option__color[style*="#ffffff"],
+.product-option__color[aria-label*="White"],
+.product-option__color[aria-label*="white"],
+.product-option__color[aria-label*="Белый"],
+.product-option__color[aria-label*="Ivory"],
+.product-option__color[aria-label*="Cream"] {
+  border-color: #d0d0d0;
+}
+
+.product-option__color.is-active {
+  outline-color: var(--color-foreground);
+  border-color: transparent;
+}
+
 .product-option__color:hover {
+  outline-color: #999;
+}
+
+.product-option__color.is-active:hover {
   outline-color: var(--color-foreground);
 }
 
