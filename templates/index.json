@@ -84,6 +84,7 @@
         "feature-1": {
           "type": "feature",
           "settings": {
+            "image": "shopify://shop_images/2640710753872.jpg",
             "subheading": "Now Trending",
             "heading": "After Dark",
             "link": "",
@@ -93,6 +94,7 @@
         "feature-2": {
           "type": "feature",
           "settings": {
+            "image": "shopify://shop_images/692ca7a1-2fa5-48ea-a472-77c18b6114b9.jpg",
             "subheading": "The Pre-Spring Collection",
             "heading": "New Essentials",
             "link": "",
