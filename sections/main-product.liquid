@@ -253,7 +253,13 @@
   overflow: hidden;
   background: #f8f8f8;
   position: relative;
-  max-height: 75vh;
+  max-height: 55vh; /* Уменьшено с 75vh */
+}
+
+@media (min-width: 1024px) {
+  .product-gallery__main {
+    max-height: 60vh; /* Немного больше на десктопе */
+  }
 }
 
 .product-gallery__slide {
@@ -282,23 +288,45 @@
   height: 100%;
 }
 
+/* Thumbnails - более заметные */
 .product-gallery__thumbs {
   display: flex;
-  gap: 10px;
-  margin-top: 16px;
-  overflow-x: auto;
-  padding-bottom: 8px;
+  flex-wrap: wrap; /* Перенос на новую строку */
+  gap: 8px;
+  margin-top: 20px;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .product-gallery__thumbs {
+    gap: 10px;
+  }
 }
 
 .product-gallery__thumb {
   flex-shrink: 0;
-  width: 80px;
-  height: 100px;
+  width: 60px;
+  height: 75px;
   overflow: hidden;
   border: 2px solid transparent;
   opacity: 0.7;
   transition: all 0.2s ease;
   background: #f8f8f8;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .product-gallery__thumb {
+    width: 70px;
+    height: 88px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-gallery__thumb {
+    width: 80px;
+    height: 100px;
+  }
 }
 
 .product-gallery__thumb.is-active,
