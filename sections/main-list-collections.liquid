@@ -1,0 +1,111 @@
+<section class="collections-page">
+  <div class="container">
+    <h1 class="collections-title">{{ 'templates.collection.title' | t }}</h1>
+    
+    <div class="collections-grid">
+      {%- for collection in collections -%}
+        {%- unless collection.handle == 'all' -%}
+          <a href="{{ collection.url }}" class="collection-card">
+            <div class="collection-card__image">
+              {%- if collection.image -%}
+                <img 
+                  src="{{ collection.image | image_url: width: 600 }}"
+                  srcset="{{ collection.image | image_url: width: 400 }} 400w,
+                          {{ collection.image | image_url: width: 600 }} 600w"
+                  sizes="(max-width: 767px) 50vw, 33vw"
+                  alt="{{ collection.title }}"
+                  loading="lazy"
+                >
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'collection-card__placeholder' }}
+              {%- endif -%}
+            </div>
+            <div class="collection-card__content">
+              <h2 class="collection-card__title">{{ collection.title }}</h2>
+              <p class="collection-card__count">{{ collection.all_products_count }} {{ 'products.product.products' | t }}</p>
+            </div>
+          </a>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+.collections-page {
+  padding: calc(var(--header-height) + var(--announcement-height) + 40px) 0 80px;
+}
+
+.collections-title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .collections-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.collection-card {
+  display: block;
+}
+
+.collection-card__image {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: #f5f5f5;
+  margin-bottom: 16px;
+}
+
+.collection-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.collection-card:hover .collection-card__image img {
+  transform: scale(1.03);
+}
+
+.collection-card__placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.collection-card__title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.collection-card__count {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+</style>
+
+{% schema %}
+{
+  "name": "Collections List",
+  "tag": "section",
+  "class": "section-collections-list"
+}
+{% endschema %}

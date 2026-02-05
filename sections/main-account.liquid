@@ -1,0 +1,152 @@
+<section class="account-page">
+  <div class="container">
+    <div class="account-header">
+      <h1 class="account-title">{{ 'customer.account.title' | t }}</h1>
+      <a href="{{ routes.account_logout_url }}" class="account-logout">{{ 'customer.log_out' | t }}</a>
+    </div>
+
+    <div class="account-grid">
+      <!-- Order History -->
+      <div class="account-orders">
+        <h2 class="account-section-title">{{ 'customer.orders.title' | t }}</h2>
+        
+        {%- if customer.orders.size > 0 -%}
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>{{ 'customer.orders.order_number' | t }}</th>
+                <th>{{ 'customer.orders.date' | t }}</th>
+                <th>{{ 'customer.orders.payment_status' | t }}</th>
+                <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                <th>{{ 'customer.orders.total' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- for order in customer.orders -%}
+                <tr>
+                  <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                  <td>{{ order.created_at | date: format: 'date' }}</td>
+                  <td>{{ order.financial_status_label }}</td>
+                  <td>{{ order.fulfillment_status_label }}</td>
+                  <td>{{ order.total_price | money }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+          
+          {%- if paginate.pages > 1 -%}
+            {% render 'pagination', paginate: paginate %}
+          {%- endif -%}
+        {%- else -%}
+          <p class="no-orders">{{ 'customer.orders.none' | t }}</p>
+        {%- endif -%}
+      </div>
+
+      <!-- Account Details -->
+      <div class="account-details">
+        <h2 class="account-section-title">{{ 'customer.account.details' | t }}</h2>
+        
+        <div class="account-info">
+          <p><strong>{{ customer.name }}</strong></p>
+          <p>{{ customer.email }}</p>
+          
+          {%- if customer.default_address -%}
+            <address>
+              {{ customer.default_address | format_address }}
+            </address>
+          {%- endif -%}
+          
+          <a href="{{ routes.account_addresses_url }}" class="btn btn--secondary btn--small">
+            {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.account-page {
+  padding: calc(var(--header-height) + var(--announcement-height) + 40px) 0 80px;
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.account-title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.account-logout {
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.account-grid {
+  display: grid;
+  gap: 40px;
+}
+
+@media (min-width: 1024px) {
+  .account-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.account-section-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.orders-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.orders-table a {
+  text-decoration: underline;
+}
+
+.no-orders {
+  color: var(--color-text-muted);
+}
+
+.account-info address {
+  margin: 16px 0;
+  font-style: normal;
+  line-height: 1.6;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Account",
+  "tag": "section",
+  "class": "section-account"
+}
+{% endschema %}

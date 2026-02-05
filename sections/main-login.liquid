@@ -1,0 +1,219 @@
+<section class="login-page">
+  <div class="container">
+    <div class="login-wrapper">
+      <div class="login-form-container">
+        <h1 class="login-title">{{ 'customer.login.title' | t }}</h1>
+        
+        {%- form 'customer_login', novalidate: 'novalidate' -%}
+          {%- if form.errors -%}
+            <div class="form-errors">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+          
+          <div class="form-field">
+            <label for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+            <input
+              type="email"
+              name="customer[email]"
+              id="CustomerEmail"
+              autocomplete="email"
+              autocapitalize="off"
+              required
+            >
+          </div>
+          
+          <div class="form-field">
+            <label for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+            <input
+              type="password"
+              name="customer[password]"
+              id="CustomerPassword"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+          
+          <a href="#recover" class="forgot-password">{{ 'customer.login.forgot_password' | t }}</a>
+          
+          <button type="submit" class="btn btn--primary btn--full">
+            {{ 'customer.login.sign_in' | t }}
+          </button>
+        {%- endform -%}
+        
+        <div class="login-footer">
+          <p>{{ 'customer.login.new_customer' | t }}</p>
+          <a href="{{ routes.account_register_url }}" class="btn btn--secondary">
+            {{ 'customer.register.title' | t }}
+          </a>
+        </div>
+      </div>
+      
+      <!-- Recover Password Form -->
+      <div id="recover" class="recover-form-container" style="display: none;">
+        <h2 class="login-title">{{ 'customer.recover_password.title' | t }}</h2>
+        <p>{{ 'customer.recover_password.subtext' | t }}</p>
+        
+        {%- form 'recover_customer_password' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="form-success">{{ 'customer.recover_password.success' | t }}</p>
+          {%- endif -%}
+          
+          <div class="form-field">
+            <label for="RecoverEmail">{{ 'customer.login.email' | t }}</label>
+            <input
+              type="email"
+              name="email"
+              id="RecoverEmail"
+              autocomplete="email"
+              autocapitalize="off"
+              required
+            >
+          </div>
+          
+          <button type="submit" class="btn btn--primary btn--full">
+            {{ 'customer.recover_password.submit' | t }}
+          </button>
+          
+          <a href="#login" class="cancel-recover">{{ 'customer.recover_password.cancel' | t }}</a>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.login-page {
+  padding: calc(var(--header-height) + var(--announcement-height) + 60px) 0 80px;
+}
+
+.login-wrapper {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.login-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-field input:focus {
+  outline: none;
+  border-color: var(--color-foreground);
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-decoration: underline;
+}
+
+.login-footer {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.login-footer p {
+  margin-bottom: 16px;
+  color: var(--color-text-muted);
+}
+
+.form-errors {
+  background: #fee;
+  border: 1px solid #fcc;
+  padding: 16px;
+  margin-bottom: 20px;
+  color: #c00;
+  font-size: 14px;
+}
+
+.form-success {
+  background: #efe;
+  border: 1px solid #cfc;
+  padding: 16px;
+  margin-bottom: 20px;
+  color: #060;
+  font-size: 14px;
+}
+
+.cancel-recover {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const hash = window.location.hash;
+  const loginForm = document.querySelector('.login-form-container');
+  const recoverForm = document.querySelector('.recover-form-container');
+  
+  function showRecover() {
+    loginForm.style.display = 'none';
+    recoverForm.style.display = 'block';
+  }
+  
+  function showLogin() {
+    loginForm.style.display = 'block';
+    recoverForm.style.display = 'none';
+  }
+  
+  if (hash === '#recover') {
+    showRecover();
+  }
+  
+  document.querySelectorAll('a[href="#recover"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      showRecover();
+      history.pushState(null, null, '#recover');
+    });
+  });
+  
+  document.querySelectorAll('a[href="#login"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      showLogin();
+      history.pushState(null, null, '#');
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Login",
+  "tag": "section",
+  "class": "section-login"
+}
+{% endschema %}

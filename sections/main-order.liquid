@@ -1,0 +1,200 @@
+<section class="order-page">
+  <div class="container">
+    <div class="order-header">
+      <a href="{{ routes.account_url }}" class="order-back">← {{ 'customer.account.title' | t }}</a>
+      <h1 class="order-title">{{ 'customer.order.title' | t: name: order.name }}</h1>
+      <p class="order-date">{{ 'customer.order.date_html' | t: date: order.created_at | date: format: 'date' }}</p>
+    </div>
+
+    {%- if order.cancelled -%}
+      <div class="order-cancelled">
+        <p>{{ 'customer.order.cancelled_html' | t: date: order.cancelled_at | date: format: 'date' }}</p>
+        <p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason_label }}</p>
+      </div>
+    {%- endif -%}
+
+    <div class="order-grid">
+      <div class="order-items">
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th colspan="2">{{ 'customer.order.product' | t }}</th>
+              <th>{{ 'customer.order.sku' | t }}</th>
+              <th>{{ 'customer.order.price' | t }}</th>
+              <th>{{ 'customer.order.quantity' | t }}</th>
+              <th>{{ 'customer.order.total' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td class="order-item-image">
+                  {%- if line_item.image -%}
+                    <img src="{{ line_item.image | image_url: width: 100 }}" alt="{{ line_item.title }}">
+                  {%- endif -%}
+                </td>
+                <td class="order-item-title">
+                  <p>{{ line_item.title | link_to: line_item.product.url }}</p>
+                  {%- if line_item.fulfillment -%}
+                    <p class="fulfillment-info">
+                      {{ 'customer.order.fulfilled_at_html' | t: date: line_item.fulfillment.created_at | date: format: 'date' }}
+                      {%- if line_item.fulfillment.tracking_url -%}
+                        <a href="{{ line_item.fulfillment.tracking_url }}">
+                          {{ 'customer.order.track_shipment' | t }}
+                        </a>
+                      {%- endif -%}
+                    </p>
+                  {%- endif -%}
+                </td>
+                <td>{{ line_item.sku }}</td>
+                <td>{{ line_item.final_price | money }}</td>
+                <td>{{ line_item.quantity }}</td>
+                <td>{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5">{{ 'customer.order.subtotal' | t }}</td>
+              <td>{{ order.line_items_subtotal_price | money }}</td>
+            </tr>
+            {%- for discount_application in order.cart_level_discount_applications -%}
+              <tr>
+                <td colspan="5">{{ 'customer.order.discount' | t }} ({{ discount_application.title }})</td>
+                <td>-{{ discount_application.total_allocated_amount | money }}</td>
+              </tr>
+            {%- endfor -%}
+            {%- for shipping_method in order.shipping_methods -%}
+              <tr>
+                <td colspan="5">{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})</td>
+                <td>{{ shipping_method.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+            {%- for tax_line in order.tax_lines -%}
+              <tr>
+                <td colspan="5">{{ 'customer.order.tax' | t }} ({{ tax_line.title }} {{ tax_line.rate_percentage }}%)</td>
+                <td>{{ tax_line.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+            <tr class="order-total">
+              <td colspan="5">{{ 'customer.order.total' | t }}</td>
+              <td>{{ order.total_price | money }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="order-details">
+        <div class="order-detail-block">
+          <h3>{{ 'customer.order.billing_address' | t }}</h3>
+          <p><strong>{{ 'customer.order.payment_status' | t }}:</strong> {{ order.financial_status_label }}</p>
+          {{ order.billing_address | format_address }}
+        </div>
+        
+        <div class="order-detail-block">
+          <h3>{{ 'customer.order.shipping_address' | t }}</h3>
+          <p><strong>{{ 'customer.order.fulfillment_status' | t }}:</strong> {{ order.fulfillment_status_label }}</p>
+          {{ order.shipping_address | format_address }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.order-page {
+  padding: calc(var(--header-height) + var(--announcement-height) + 40px) 0 80px;
+}
+
+.order-back {
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.order-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.order-date {
+  color: var(--color-text-muted);
+  margin-bottom: 30px;
+}
+
+.order-cancelled {
+  background: #fee;
+  border: 1px solid #fcc;
+  padding: 16px;
+  margin-bottom: 30px;
+  color: #c00;
+}
+
+.order-grid {
+  display: grid;
+  gap: 40px;
+}
+
+@media (min-width: 1024px) {
+  .order-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.order-table th,
+.order-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.order-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-item-image img {
+  width: 60px;
+  height: auto;
+}
+
+.order-total td {
+  font-weight: 600;
+  border-top: 2px solid var(--color-foreground);
+}
+
+.order-detail-block {
+  margin-bottom: 30px;
+}
+
+.order-detail-block h3 {
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.fulfillment-info {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Order",
+  "tag": "section",
+  "class": "section-order"
+}
+{% endschema %}

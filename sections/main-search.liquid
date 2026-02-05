@@ -1,0 +1,222 @@
+{%- liquid
+  assign results_count = search.results_count
+-%}
+
+<section class="search-page">
+  <div class="container">
+    <div class="search-header">
+      <h1 class="search-title">{{ 'templates.search.title' | t }}</h1>
+      
+      <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
+        <input type="hidden" name="type" value="product,article,page">
+        <div class="search-form__field">
+          <input
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+            aria-label="{{ 'general.search.placeholder' | t }}"
+            class="search-form__input"
+          >
+          <button type="submit" class="search-form__submit">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      <p class="search-results-count">
+        {{ 'templates.search.results_with_count' | t: terms: search.terms, count: results_count }}
+      </p>
+
+      {%- if search.results.size > 0 -%}
+        {%- paginate search.results by 24 -%}
+          <div class="search-results">
+            {%- for item in search.results -%}
+              <article class="search-result">
+                {%- case item.object_type -%}
+                  {%- when 'product' -%}
+                    <a href="{{ item.url }}" class="search-result__link">
+                      {%- if item.featured_image -%}
+                        <div class="search-result__image">
+                          <img src="{{ item.featured_image | image_url: width: 200 }}" alt="{{ item.title }}">
+                        </div>
+                      {%- endif -%}
+                      <div class="search-result__content">
+                        <span class="search-result__type">{{ 'templates.search.product' | t }}</span>
+                        <h3 class="search-result__title">{{ item.title }}</h3>
+                        <p class="search-result__price">{{ item.price | money }}</p>
+                      </div>
+                    </a>
+                  {%- when 'article' -%}
+                    <a href="{{ item.url }}" class="search-result__link">
+                      {%- if item.image -%}
+                        <div class="search-result__image">
+                          <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title }}">
+                        </div>
+                      {%- endif -%}
+                      <div class="search-result__content">
+                        <span class="search-result__type">{{ 'templates.search.article' | t }}</span>
+                        <h3 class="search-result__title">{{ item.title }}</h3>
+                        <p class="search-result__excerpt">{{ item.content | strip_html | truncate: 100 }}</p>
+                      </div>
+                    </a>
+                  {%- when 'page' -%}
+                    <a href="{{ item.url }}" class="search-result__link">
+                      <div class="search-result__content">
+                        <span class="search-result__type">{{ 'templates.search.page' | t }}</span>
+                        <h3 class="search-result__title">{{ item.title }}</h3>
+                        <p class="search-result__excerpt">{{ item.content | strip_html | truncate: 100 }}</p>
+                      </div>
+                    </a>
+                {%- endcase -%}
+              </article>
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="pagination" aria-label="Pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="pagination__link">← Previous</a>
+              {%- endif -%}
+              
+              <span class="pagination__current">Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+              
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="pagination__link">Next →</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- endpaginate -%}
+      {%- else -%}
+        <p class="search-no-results">{{ 'templates.search.no_results' | t: terms: search.terms }}</p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+.search-page {
+  padding: calc(var(--header-height) + var(--announcement-height) + 40px) 0 80px;
+}
+
+.search-header {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.search-title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.search-form__field {
+  display: flex;
+  border: 1px solid var(--color-border);
+}
+
+.search-form__input {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  font-size: 16px;
+}
+
+.search-form__submit {
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.search-results-count {
+  margin-bottom: 30px;
+  color: var(--color-text-muted);
+}
+
+.search-results {
+  display: grid;
+  gap: 20px;
+}
+
+.search-result__link {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  transition: border-color 0.2s;
+}
+
+.search-result__link:hover {
+  border-color: var(--color-foreground);
+}
+
+.search-result__image {
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.search-result__image img {
+  width: 100%;
+  height: auto;
+}
+
+.search-result__type {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+
+.search-result__title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+.search-result__price {
+  font-weight: 500;
+}
+
+.search-result__excerpt {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.search-no-results {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 60px 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.pagination__link {
+  text-decoration: underline;
+}
+
+.pagination__current {
+  color: var(--color-text-muted);
+}
+</style>
+
+{% schema %}
+{
+  "name": "Search",
+  "tag": "section",
+  "class": "section-search"
+}
+{% endschema %}

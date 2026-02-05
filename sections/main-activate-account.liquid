@@ -1,0 +1,102 @@
+<section class="activate-page">
+  <div class="container">
+    <div class="activate-wrapper">
+      <h1 class="activate-title">{{ 'customer.activate_account.title' | t }}</h1>
+      <p class="activate-subtitle">{{ 'customer.activate_account.subtext' | t }}</p>
+      
+      {%- form 'activate_customer_password' -%}
+        <div class="form-field">
+          <label for="Password">{{ 'customer.activate_account.password' | t }}</label>
+          <input
+            type="password"
+            name="customer[password]"
+            id="Password"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+        
+        <div class="form-field">
+          <label for="PasswordConfirmation">{{ 'customer.activate_account.password_confirm' | t }}</label>
+          <input
+            type="password"
+            name="customer[password_confirmation]"
+            id="PasswordConfirmation"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+        
+        <button type="submit" class="btn btn--primary btn--full">
+          {{ 'customer.activate_account.submit' | t }}
+        </button>
+        
+        <p class="activate-decline">
+          <a href="{{ routes.account_url }}">{{ 'customer.activate_account.cancel' | t }}</a>
+        </p>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+<style>
+.activate-page {
+  padding: calc(var(--header-height) + var(--announcement-height) + 60px) 0 80px;
+}
+
+.activate-wrapper {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.activate-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+.activate-subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: 30px;
+}
+
+.form-field {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.activate-decline {
+  margin-top: 20px;
+}
+
+.activate-decline a {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Activate Account",
+  "tag": "section",
+  "class": "section-activate"
+}
+{% endschema %}
