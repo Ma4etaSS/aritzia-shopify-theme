@@ -29,8 +29,13 @@
               >
             </picture>
           {%- else -%}
-            {%- comment -%} Beautiful gradient placeholder {%- endcomment -%}
-            <div class="hero__placeholder"></div>
+            {%- comment -%} Fallback image from Unsplash {%- endcomment -%}
+            <img
+              src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&q=80"
+              alt="{{ block.settings.heading | default: 'Hero image' | escape }}"
+              loading="eager"
+              class="hero__image hero__image--fallback"
+            >
           {%- endif -%}
         </div>
 
@@ -62,6 +67,28 @@
         </div>
       </div>
     {%- endfor -%}
+  {%- else -%}
+    {%- comment -%} Default content when no blocks {%- endcomment -%}
+    <div class="hero__slide is-active">
+      <div class="hero__media">
+        <img
+          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&q=80"
+          alt="Spring Collection"
+          loading="eager"
+          class="hero__image"
+        >
+      </div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content container">
+        <div class="hero__text-block">
+          <p class="hero__subheading">New Collection</p>
+          <h1 class="hero__heading">Spring 2026</h1>
+          <div class="hero__actions">
+            <a href="/collections/all" class="hero__button">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
   {%- endif -%}
 </section>
 

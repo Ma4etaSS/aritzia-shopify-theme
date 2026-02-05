@@ -6,8 +6,8 @@
         "slide-1": {
           "type": "slide",
           "settings": {
-            "subheading": "New Season",
-            "heading": "Spring Collection",
+            "subheading": "New Collection",
+            "heading": "Spring 2026",
             "button_label": "Shop Now",
             "button_link": "/collections/all",
             "show_overlay": true,
@@ -15,12 +15,13 @@
           }
         }
       },
-      "block_order": ["slide-1"]
+      "block_order": ["slide-1"],
+      "settings": {}
     },
-    "featured-collection-1": {
+    "featured-collection": {
       "type": "featured-collection",
       "settings": {
-        "subheading": "Just Dropped",
+        "subheading": "Just In",
         "heading": "New Arrivals",
         "products_count": 8,
         "show_vendor": false,
@@ -29,22 +30,16 @@
         "show_view_all": true
       }
     },
-    "featured-collection-2": {
-      "type": "featured-collection",
+    "collection-grid": {
+      "type": "collection-grid",
       "settings": {
-        "subheading": "Essentials",
-        "heading": "Best Sellers",
-        "products_count": 8,
-        "show_vendor": false,
-        "show_secondary_image": true,
-        "show_quick_add": true,
-        "show_view_all": true
+        "heading": "Shop by Category"
       }
     }
   },
   "order": [
     "hero",
-    "featured-collection-1",
-    "featured-collection-2"
+    "featured-collection",
+    "collection-grid"
   ]
 }
