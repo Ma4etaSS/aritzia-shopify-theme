@@ -48,20 +48,27 @@
           <div class="mega-menu" aria-hidden="true">
             <div class="mega-menu__inner">
               <div class="mega-menu__column">
-                <p class="mega-menu__heading">Featured</p>
+                <p class="mega-menu__heading">Categories</p>
                 <ul class="mega-menu__list">
                   <li><a href="/collections/all" class="mega-menu__link">All New</a></li>
                   <li><a href="/collections/all" class="mega-menu__link">New This Week</a></li>
-                  <li><a href="/collections/all" class="mega-menu__link">Back In Stock</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Back In</a></li>
                 </ul>
               </div>
               <div class="mega-menu__column">
-                <p class="mega-menu__heading">Collections</p>
+                <p class="mega-menu__heading">Featured</p>
                 <ul class="mega-menu__list">
                   <li><a href="/collections/all" class="mega-menu__link">Work Wardrobe</a></li>
                   <li><a href="/collections/all" class="mega-menu__link">Valentine's Day</a></li>
-                  <li><a href="/collections/all" class="mega-menu__link">Pre-Spring</a></li>
-                  <li><a href="/collections/all" class="mega-menu__link">Lunar New Year</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">The Pre-Spring Collection</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Must-Haves</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Trends</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">After Dark</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Villa Blue</a></li>
                 </ul>
               </div>
               <div class="mega-menu__image">
@@ -260,8 +267,23 @@
 }
 
 .header--transparent:not(.header--scrolled) .mega-menu {
-  background: #fff;
-  color: var(--color-text);
+  background: #ffffff;
+}
+
+.header--transparent:not(.header--scrolled) .mega-menu__inner {
+  background: #ffffff;
+}
+
+.header--transparent:not(.header--scrolled) .mega-menu__heading {
+  color: #000000;
+}
+
+.header--transparent:not(.header--scrolled) .mega-menu__link {
+  color: #333333;
+}
+
+.header--transparent:not(.header--scrolled) .mega-menu__link:hover {
+  color: #000000;
 }
 
 .header--scrolled {
@@ -397,72 +419,87 @@
 .mega-menu {
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 600px;
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  left: 0;
+  min-width: 700px;
+  background: #ffffff;
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 100;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  z-index: 1000;
 }
 
 .mega-menu.is-visible {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .mega-menu__inner {
   display: flex;
-  padding: 32px;
-  gap: 40px;
+  padding: 40px 48px;
+  gap: 48px;
+  background: #ffffff;
 }
 
 .mega-menu__column {
-  min-width: 140px;
+  min-width: 150px;
 }
 
 .mega-menu__heading {
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 16px;
-  color: var(--color-text);
+  margin-bottom: 20px;
+  color: #000000;
+  display: block;
 }
 
 .mega-menu__list {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .mega-menu__link {
   display: block;
-  padding: 6px 0;
-  font-size: 13px;
-  color: var(--color-text-muted);
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
   transition: color 0.2s ease;
 }
 
 .mega-menu__link:hover {
-  color: var(--color-text);
+  color: #000000;
 }
 
 .mega-menu__image {
   flex-shrink: 0;
-  width: 200px;
+  width: 220px;
+  margin-left: auto;
 }
 
 .mega-menu__image a {
   display: block;
   position: relative;
+  overflow: hidden;
 }
 
 .mega-menu__image img {
   width: 100%;
-  height: 250px;
+  height: 280px;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.mega-menu__image a:hover img {
+  transform: scale(1.03);
 }
 
 .mega-menu__image-caption {
@@ -470,12 +507,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.5));
-  color: #fff;
+  padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: #ffffff;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
