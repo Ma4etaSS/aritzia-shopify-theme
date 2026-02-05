@@ -5,51 +5,56 @@
   endif
 -%}
 
-<header class="header {% if transparent_header %}header--transparent{% else %}header--solid{% endif %}" data-header>
+<header class="header {% if transparent_header %}header--transparent{% else %}header--solid{% endif %}" data-header role="banner">
   <div class="header__wrapper">
     <!-- Logo -->
-    <a href="/" class="header__logo">
+    <a href="/" class="header__logo" aria-label="{{ shop.name }} - Home">
       {{ shop.name }}
     </a>
 
     <!-- Desktop Navigation -->
-    <nav class="header__nav" role="navigation">
+    <nav class="header__nav" role="navigation" aria-label="Main navigation">
       <div class="header__nav-item" data-nav-item>
-        <span>New</span>
-        <div class="mega-menu">
+        <button type="button" class="header__nav-button" aria-expanded="false" aria-haspopup="true">
+          <span>New</span>
+          <svg class="header__nav-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="mega-menu" aria-hidden="true">
           <div class="mega-menu__grid">
             <div class="mega-menu__column">
-              <h4>Categories</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Categories</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">All New</a>
                 <a href="/collections/all" class="mega-menu__link">New This Week</a>
-                <a href="/collections/all" class="mega-menu__link">Back In</a>
-              </div>
+                <a href="/collections/all" class="mega-menu__link">Back In Stock</a>
+              </nav>
             </div>
             <div class="mega-menu__column">
-              <h4>Featured</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Featured</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">Work Wardrobe</a>
                 <a href="/collections/all" class="mega-menu__link">Valentine's Day</a>
                 <a href="/collections/all" class="mega-menu__link">The Pre-Spring Collection</a>
                 <a href="/collections/all" class="mega-menu__link">Must-Haves</a>
-              </div>
+              </nav>
             </div>
             <div class="mega-menu__column">
-              <h4>Trends</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Trends</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">After Dark</a>
                 <a href="/collections/all" class="mega-menu__link">Villa Blue</a>
-              </div>
+              </nav>
             </div>
-            <div class="mega-menu__column"></div>
+            <div class="mega-menu__column mega-menu__column--empty"></div>
             <div class="mega-menu__images">
               <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=500&fit=crop" alt="Work Wardrobe" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=500&fit=crop&auto=format" alt="Work Wardrobe collection" loading="lazy">
                 <span class="mega-menu__image-label">Work Wardrobe</span>
               </a>
               <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&h=500&fit=crop" alt="After Dark" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&h=500&fit=crop&auto=format" alt="After Dark collection" loading="lazy">
                 <span class="mega-menu__image-label">After Dark</span>
               </a>
             </div>
@@ -58,52 +63,57 @@
       </div>
 
       <div class="header__nav-item" data-nav-item>
-        <span>Clothing</span>
-        <div class="mega-menu">
+        <button type="button" class="header__nav-button" aria-expanded="false" aria-haspopup="true">
+          <span>Clothing</span>
+          <svg class="header__nav-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="mega-menu" aria-hidden="true">
           <div class="mega-menu__grid">
             <div class="mega-menu__column">
-              <h4>Tops</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Tops</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">All Tops</a>
                 <a href="/collections/all" class="mega-menu__link">T-Shirts</a>
                 <a href="/collections/all" class="mega-menu__link">Blouses</a>
                 <a href="/collections/all" class="mega-menu__link">Bodysuits</a>
-              </div>
+              </nav>
             </div>
             <div class="mega-menu__column">
-              <h4>Bottoms</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Bottoms</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">All Bottoms</a>
                 <a href="/collections/all" class="mega-menu__link">Pants</a>
                 <a href="/collections/all" class="mega-menu__link">Jeans</a>
                 <a href="/collections/all" class="mega-menu__link">Skirts</a>
-              </div>
+              </nav>
             </div>
             <div class="mega-menu__column">
-              <h4>Dresses</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Dresses</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">All Dresses</a>
                 <a href="/collections/all" class="mega-menu__link">Mini</a>
                 <a href="/collections/all" class="mega-menu__link">Midi</a>
                 <a href="/collections/all" class="mega-menu__link">Maxi</a>
-              </div>
+              </nav>
             </div>
             <div class="mega-menu__column">
-              <h4>Outerwear</h4>
-              <div class="mega-menu__links">
+              <h4 class="mega-menu__heading">Outerwear</h4>
+              <nav class="mega-menu__links">
                 <a href="/collections/all" class="mega-menu__link">All Outerwear</a>
                 <a href="/collections/all" class="mega-menu__link">Jackets</a>
                 <a href="/collections/all" class="mega-menu__link">Coats</a>
                 <a href="/collections/all" class="mega-menu__link">Blazers</a>
-              </div>
+              </nav>
             </div>
             <div class="mega-menu__images">
               <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop" alt="Dresses" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop&auto=format" alt="Dresses collection" loading="lazy">
                 <span class="mega-menu__image-label">Dresses</span>
               </a>
               <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=400&h=500&fit=crop" alt="Jackets" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=400&h=500&fit=crop&auto=format" alt="Jackets and Coats collection" loading="lazy">
                 <span class="mega-menu__image-label">Jackets & Coats</span>
               </a>
             </div>
@@ -111,52 +121,41 @@
         </div>
       </div>
 
-      <a href="/collections/all" class="header__nav-item">
-        <span>The Super Puff™</span>
-      </a>
-
-      <a href="/collections/all" class="header__nav-item">
-        <span>Sweatfleece</span>
-      </a>
-
-      <a href="/collections/all" class="header__nav-item">
-        <span>Accessories</span>
-      </a>
-
-      <a href="/collections/all" class="header__nav-item">
-        <span>Brands</span>
-      </a>
+      <a href="/collections/all" class="header__nav-link">The Super Puff™</a>
+      <a href="/collections/all" class="header__nav-link">Sweatfleece</a>
+      <a href="/collections/all" class="header__nav-link">Accessories</a>
+      <a href="/collections/all" class="header__nav-link">Brands</a>
     </nav>
 
     <!-- Header Icons -->
     <div class="header__icons">
-      <button class="header__icon header__search" type="button" aria-label="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <button class="header__icon header__search" type="button" aria-label="Open search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
           <circle cx="11" cy="11" r="8"/>
           <path d="M21 21l-4.35-4.35"/>
         </svg>
-        <span class="header__search-text">Search</span>
+        <span class="header__icon-text">Search</span>
       </button>
 
-      <a href="/account" class="header__icon" aria-label="Account">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="4" width="18" height="16" rx="2"/>
-          <path d="M8 10h8M8 14h4"/>
+      <a href="/account" class="header__icon" aria-label="My account">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
         </svg>
       </a>
 
-      <a href="/collections/wishlist" class="header__icon" aria-label="Wishlist">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <a href="/pages/wishlist" class="header__icon" aria-label="Wishlist">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
       </a>
 
-      <a href="/account/login" class="header__icon" aria-label="Sign In">
+      <a href="/account/login" class="header__icon header__signin" aria-label="Sign in to your account">
         <span>Sign In</span>
       </a>
 
-      <button class="header__menu-toggle" type="button" aria-label="Menu" data-menu-toggle>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <button class="header__menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
           <line x1="3" y1="6" x2="21" y2="6"/>
           <line x1="3" y1="12" x2="21" y2="12"/>
           <line x1="3" y1="18" x2="21" y2="18"/>
@@ -166,15 +165,306 @@
   </div>
 </header>
 
+<style>
+.header {
+  position: fixed;
+  top: var(--announcement-height, 40px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, color 0.3s ease, top 0.3s ease;
+}
+
+.header--transparent {
+  background-color: transparent;
+  color: #fff;
+}
+
+.header--solid {
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+}
+
+.header__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height, 60px);
+  padding: 0 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .header__wrapper {
+    padding: 0 40px;
+    height: 70px;
+  }
+}
+
+/* Logo */
+.header__logo {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+  .header__logo {
+    font-size: 26px;
+  }
+}
+
+.header__logo:hover {
+  opacity: 0.7;
+}
+
+/* Navigation */
+.header__nav {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+}
+
+.header__nav-item {
+  position: relative;
+}
+
+.header__nav-button,
+.header__nav-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.header__nav-button:hover,
+.header__nav-link:hover {
+  opacity: 0.7;
+}
+
+.header__nav-arrow {
+  transition: transform 0.2s ease;
+}
+
+.header__nav-item:hover .header__nav-arrow {
+  transform: rotate(180deg);
+}
+
+/* Mega Menu */
+.mega-menu {
+  position: fixed;
+  top: calc(var(--announcement-height, 40px) + var(--header-height, 60px));
+  left: 0;
+  right: 0;
+  background: #fff;
+  color: #000;
+  padding: 48px 40px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  max-height: calc(100vh - var(--announcement-height, 40px) - var(--header-height, 60px));
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .mega-menu {
+    top: calc(var(--announcement-height, 40px) + 70px);
+  }
+}
+
+.header__nav-item:hover .mega-menu,
+.header__nav-item:focus-within .mega-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mega-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 2fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mega-menu__heading {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.mega-menu__links {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mega-menu__link {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #000;
+  transition: opacity 0.2s ease;
+}
+
+.mega-menu__link:hover {
+  opacity: 0.6;
+}
+
+.mega-menu__link:focus {
+  outline: 1px solid #000;
+  outline-offset: 2px;
+}
+
+.mega-menu__images {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.mega-menu__image-card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  display: block;
+}
+
+.mega-menu__image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.mega-menu__image-card:hover img {
+  transform: scale(1.05);
+}
+
+.mega-menu__image-label {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: #000;
+  background: #fff;
+  padding: 8px 12px;
+}
+
+/* Header Icons */
+.header__icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (min-width: 1024px) {
+  .header__icons {
+    gap: 20px;
+  }
+}
+
+.header__icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  padding: 4px;
+}
+
+.header__icon:hover {
+  opacity: 0.7;
+}
+
+.header__icon:focus {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+.header__icon-text {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .header__icon-text {
+    display: inline;
+  }
+}
+
+.header__signin {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .header__signin {
+    display: flex;
+  }
+}
+
+/* Mobile Menu Button */
+.header__menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .header__menu-toggle {
+    display: none;
+  }
+}
+</style>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
   const header = document.querySelector('[data-header]');
+  if (!header) return;
+
   let lastScroll = 0;
-  
+  const isHomepage = document.body.classList.contains('template-index');
+
   function updateHeader() {
     const scroll = window.scrollY;
-    const isHomepage = document.body.classList.contains('template-index');
-    
+
     if (isHomepage) {
       if (scroll > 100) {
         header.classList.remove('header--transparent');
@@ -184,13 +474,37 @@ document.addEventListener('DOMContentLoaded', function() {
         header.classList.remove('header--solid');
       }
     }
-    
+
     lastScroll = scroll;
   }
-  
+
   window.addEventListener('scroll', updateHeader, { passive: true });
   updateHeader();
-});
+
+  // Mega menu accessibility
+  const navItems = header.querySelectorAll('[data-nav-item]');
+  navItems.forEach(item => {
+    const button = item.querySelector('.header__nav-button');
+    const menu = item.querySelector('.mega-menu');
+    
+    if (button && menu) {
+      button.addEventListener('click', function() {
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+        menu.setAttribute('aria-hidden', isExpanded);
+      });
+
+      // Close on escape
+      item.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          button.setAttribute('aria-expanded', 'false');
+          menu.setAttribute('aria-hidden', 'true');
+          button.focus();
+        }
+      });
+    }
+  });
+})();
 </script>
 
 {% schema %}

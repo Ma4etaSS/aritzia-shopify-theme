@@ -1,59 +1,197 @@
 <section class="split-section">
-  {%- for block in section.blocks -%}
-    <div class="split-section__item {% if block.settings.light_text == false %}split-section__item--light{% endif %}" {{ block.shopify_attributes }}>
-      <div class="split-section__media">
-        {%- if block.settings.video != blank -%}
-          {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true }}
-        {%- elsif block.settings.image != blank -%}
-          <img 
-            src="{{ block.settings.image | image_url: width: 1000 }}"
-            srcset="{{ block.settings.image | image_url: width: 600 }} 600w,
-                    {{ block.settings.image | image_url: width: 800 }} 800w,
-                    {{ block.settings.image | image_url: width: 1000 }} 1000w"
-            sizes="(max-width: 767px) 100vw, 50vw"
-            alt="{{ block.settings.heading | escape }}"
-            loading="lazy"
-          >
-        {%- else -%}
-          {%- if forloop.first -%}
-            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&h=1200&fit=crop" alt="{{ block.settings.heading | default: 'After Dark' }}" loading="lazy">
+  {%- if section.blocks.size > 0 -%}
+    {%- for block in section.blocks -%}
+      <div class="split-section__item {% unless block.settings.light_text %}split-section__item--dark-text{% endunless %}" {{ block.shopify_attributes }}>
+        <div class="split-section__media">
+          {%- if block.settings.video != blank -%}
+            {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'split-section__video' }}
+          {%- elsif block.settings.image != blank -%}
+            <img 
+              src="{{ block.settings.image | image_url: width: 1000 }}"
+              srcset="{{ block.settings.image | image_url: width: 600 }} 600w,
+                      {{ block.settings.image | image_url: width: 800 }} 800w,
+                      {{ block.settings.image | image_url: width: 1000 }} 1000w"
+              sizes="(max-width: 767px) 100vw, 50vw"
+              alt="{{ block.settings.heading | escape }}"
+              loading="lazy"
+              class="split-section__image"
+            >
           {%- else -%}
-            <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=1000&h=1200&fit=crop" alt="{{ block.settings.heading | default: 'New Essentials' }}" loading="lazy">
+            {%- if forloop.first -%}
+              <img 
+                src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&h=1200&fit=crop&auto=format" 
+                alt="{{ block.settings.heading | default: 'After Dark' }}" 
+                loading="lazy"
+                class="split-section__image"
+              >
+            {%- else -%}
+              <img 
+                src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=1000&h=1200&fit=crop&auto=format" 
+                alt="{{ block.settings.heading | default: 'New Essentials' }}" 
+                loading="lazy"
+                class="split-section__image"
+              >
+            {%- endif -%}
           {%- endif -%}
-        {%- endif -%}
-      </div>
+        </div>
 
-      <a href="{{ block.settings.link | default: '/collections/all' }}" class="split-section__content">
-        {%- if block.settings.subheading != blank -%}
-          <p class="split-section__subheading">{{ block.settings.subheading }}</p>
-        {%- endif -%}
-        {%- if block.settings.heading != blank -%}
-          <h2 class="split-section__heading">{{ block.settings.heading }}</h2>
-        {%- endif -%}
-      </a>
-    </div>
+        <a href="{{ block.settings.link | default: '/collections/all' }}" class="split-section__content" aria-label="{{ block.settings.heading | default: 'Shop collection' }}">
+          {%- if block.settings.subheading != blank -%}
+            <p class="split-section__subheading">{{ block.settings.subheading }}</p>
+          {%- endif -%}
+          {%- if block.settings.heading != blank -%}
+            <h2 class="split-section__heading">{{ block.settings.heading }}</h2>
+          {%- endif -%}
+        </a>
+      </div>
+    {%- endfor -%}
   {%- else -%}
     <!-- Default content when no blocks -->
     <div class="split-section__item">
       <div class="split-section__media">
-        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&h=1200&fit=crop" alt="Now Trending: After Dark" loading="lazy">
+        <img 
+          src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1000&h=1200&fit=crop&auto=format" 
+          alt="After Dark collection" 
+          loading="lazy"
+          class="split-section__image"
+        >
       </div>
-      <a href="/collections/all" class="split-section__content">
+      <a href="/collections/all" class="split-section__content" aria-label="Shop After Dark collection">
         <p class="split-section__subheading">Now Trending</p>
         <h2 class="split-section__heading">After Dark</h2>
       </a>
     </div>
-    <div class="split-section__item split-section__item--light">
+    <div class="split-section__item split-section__item--dark-text">
       <div class="split-section__media">
-        <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=1000&h=1200&fit=crop" alt="New Essentials" loading="lazy">
+        <img 
+          src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=1000&h=1200&fit=crop&auto=format" 
+          alt="New Essentials collection" 
+          loading="lazy"
+          class="split-section__image"
+        >
       </div>
-      <a href="/collections/all" class="split-section__content">
+      <a href="/collections/all" class="split-section__content" aria-label="Shop New Essentials collection">
         <p class="split-section__subheading">The Pre-Spring Collection</p>
         <h2 class="split-section__heading">New Essentials</h2>
       </a>
     </div>
-  {%- endfor -%}
+  {%- endif -%}
 </section>
+
+<style>
+.split-section {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .split-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.split-section__item {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .split-section__item {
+    aspect-ratio: auto;
+    min-height: 600px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .split-section__item {
+    min-height: 700px;
+  }
+}
+
+.split-section__item--dark-text {
+  color: #000;
+}
+
+.split-section__media {
+  position: absolute;
+  inset: 0;
+}
+
+.split-section__image,
+.split-section__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.split-section__item:hover .split-section__image,
+.split-section__item:hover .split-section__video {
+  transform: scale(1.03);
+}
+
+.split-section__content {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  right: 40px;
+  color: inherit;
+  text-decoration: none;
+  z-index: 2;
+}
+
+@media (min-width: 768px) {
+  .split-section__content {
+    bottom: 60px;
+    left: 48px;
+  }
+}
+
+.split-section__content:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.split-section__subheading {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+
+.split-section__heading {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 1024px) {
+  .split-section__heading {
+    font-size: 42px;
+  }
+}
+
+/* Overlay for better text readability on light text items */
+.split-section__item:not(.split-section__item--dark-text)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.4) 0%,
+    rgba(0,0,0,0) 50%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+</style>
 
 {% schema %}
 {

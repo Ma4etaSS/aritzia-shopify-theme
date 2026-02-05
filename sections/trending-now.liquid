@@ -4,80 +4,165 @@
       <h2 class="trending__title">{{ section.settings.heading | default: 'Trending Now' }}</h2>
     </div>
 
-    <div class="trending__grid">
-      {%- for block in section.blocks -%}
-        <article class="trending__card" {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.link | default: '/collections/all' }}">
-            <div class="trending__card-image">
-              {%- if block.settings.image != blank -%}
-                <img 
-                  src="{{ block.settings.image | image_url: width: 600 }}"
-                  srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
-                          {{ block.settings.image | image_url: width: 600 }} 600w"
-                  sizes="(max-width: 767px) 50vw, 25vw"
-                  alt="{{ block.settings.title | escape }}"
-                  loading="lazy"
-                >
-              {%- else -%}
-                {%- case forloop.index -%}
-                  {%- when 1 -%}
-                    <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'New This Week' }}" loading="lazy">
-                  {%- when 2 -%}
-                    <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'Jackets & Coats' }}" loading="lazy">
-                  {%- when 3 -%}
-                    <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'Dresses' }}" loading="lazy">
-                  {%- when 4 -%}
-                    <img src="https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=600&h=800&fit=crop" alt="{{ block.settings.title | default: 'Shirts & Blouses' }}" loading="lazy">
-                  {%- else -%}
-                    <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop" alt="{{ block.settings.title | escape }}" loading="lazy">
-                {%- endcase -%}
-              {%- endif -%}
-            </div>
-          </a>
-          <h3 class="trending__card-title">
-            <a href="{{ block.settings.link | default: '/collections/all' }}">
-              {{ block.settings.title | default: 'Category' }}
+    <div class="trending__grid" role="list">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          <article class="trending__card" role="listitem" {{ block.shopify_attributes }}>
+            <a href="{{ block.settings.link | default: '/collections/all' }}" class="trending__card-link" aria-label="{{ block.settings.title | default: 'Category' }}">
+              <div class="trending__card-image">
+                {%- if block.settings.image != blank -%}
+                  <img 
+                    src="{{ block.settings.image | image_url: width: 600 }}"
+                    srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                            {{ block.settings.image | image_url: width: 600 }} 600w"
+                    sizes="(max-width: 767px) 50vw, 25vw"
+                    alt="{{ block.settings.title | escape }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {%- case forloop.index -%}
+                    {%- when 1 -%}
+                      <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop&auto=format" alt="{{ block.settings.title | default: 'New This Week' }}" loading="lazy">
+                    {%- when 2 -%}
+                      <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop&auto=format" alt="{{ block.settings.title | default: 'Jackets & Coats' }}" loading="lazy">
+                    {%- when 3 -%}
+                      <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop&auto=format" alt="{{ block.settings.title | default: 'Dresses' }}" loading="lazy">
+                    {%- when 4 -%}
+                      <img src="https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=600&h=800&fit=crop&auto=format" alt="{{ block.settings.title | default: 'Shirts & Blouses' }}" loading="lazy">
+                    {%- else -%}
+                      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop&auto=format" alt="{{ block.settings.title | escape }}" loading="lazy">
+                  {%- endcase -%}
+                {%- endif -%}
+              </div>
             </a>
-          </h3>
-        </article>
+            <h3 class="trending__card-title">
+              <a href="{{ block.settings.link | default: '/collections/all' }}">
+                {{ block.settings.title | default: 'Category' }}
+              </a>
+            </h3>
+          </article>
+        {%- endfor -%}
       {%- else -%}
         <!-- Default cards when no blocks configured -->
-        <article class="trending__card">
-          <a href="/collections/all">
-            <div class="trending__card-image">
-              <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="New This Week" loading="lazy">
-            </div>
-          </a>
-          <h3 class="trending__card-title"><a href="/collections/all">New This Week</a></h3>
-        </article>
-        <article class="trending__card">
-          <a href="/collections/all">
-            <div class="trending__card-image">
-              <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600&h=800&fit=crop" alt="Jackets & Coats" loading="lazy">
-            </div>
-          </a>
-          <h3 class="trending__card-title"><a href="/collections/all">Jackets & Coats</a></h3>
-        </article>
-        <article class="trending__card">
-          <a href="/collections/all">
-            <div class="trending__card-image">
-              <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop" alt="Dresses" loading="lazy">
-            </div>
-          </a>
-          <h3 class="trending__card-title"><a href="/collections/all">Dresses</a></h3>
-        </article>
-        <article class="trending__card">
-          <a href="/collections/all">
-            <div class="trending__card-image">
-              <img src="https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=600&h=800&fit=crop" alt="Shirts & Blouses" loading="lazy">
-            </div>
-          </a>
-          <h3 class="trending__card-title"><a href="/collections/all">Shirts & Blouses</a></h3>
-        </article>
-      {%- endfor -%}
+        {%- assign default_titles = "New This Week,Jackets & Coats,Dresses,Shirts & Blouses" | split: "," -%}
+        {%- assign default_images = "photo-1594938298603-c8148c4dae35,photo-1591369822096-ffd140ec948f,photo-1595777457583-95e059d581b8,photo-1518622358385-8ea7d0794bf6" | split: "," -%}
+        
+        {%- for i in (1..4) -%}
+          {%- assign idx = forloop.index0 -%}
+          <article class="trending__card" role="listitem">
+            <a href="/collections/all" class="trending__card-link" aria-label="{{ default_titles[idx] }}">
+              <div class="trending__card-image">
+                <img 
+                  src="https://images.unsplash.com/{{ default_images[idx] }}?w=600&h=800&fit=crop&auto=format" 
+                  alt="{{ default_titles[idx] }}" 
+                  loading="lazy"
+                >
+              </div>
+            </a>
+            <h3 class="trending__card-title">
+              <a href="/collections/all">{{ default_titles[idx] }}</a>
+            </h3>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
     </div>
   </div>
 </section>
+
+<style>
+.trending {
+  padding: 60px 0;
+}
+
+@media (min-width: 1024px) {
+  .trending {
+    padding: 80px 0;
+  }
+}
+
+.trending__header {
+  margin-bottom: 32px;
+  padding: 0 20px;
+}
+
+@media (min-width: 1024px) {
+  .trending__header {
+    padding: 0 40px;
+  }
+}
+
+.trending__title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.trending__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 16px;
+  padding: 0 20px;
+}
+
+@media (min-width: 768px) {
+  .trending__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 0 40px;
+  }
+}
+
+.trending__card {
+  position: relative;
+}
+
+.trending__card-link {
+  display: block;
+}
+
+.trending__card-image {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.trending__card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.trending__card:hover .trending__card-image img {
+  transform: scale(1.05);
+}
+
+.trending__card-title {
+  margin-top: 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.trending__card-title a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 0.2s ease;
+}
+
+.trending__card-title a:hover {
+  opacity: 0.6;
+}
+
+.trending__card-title a:focus {
+  outline: 1px solid #000;
+  outline-offset: 2px;
+}
+</style>
 
 {% schema %}
 {
@@ -96,6 +181,7 @@
     {
       "type": "category",
       "name": "Category Card",
+      "limit": 8,
       "settings": [
         {
           "type": "image_picker",
