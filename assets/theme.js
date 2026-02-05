@@ -639,6 +639,168 @@
   };
 
   // ========================
+  // PRODUCT FORM
+  // ========================
+  
+  const ProductForm = {
+    init() {
+      document.querySelectorAll('[data-product-form]').forEach(form => {
+        this.initForm(form);
+      });
+    },
+    
+    initForm(form) {
+      // Handle form submission
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('[data-add-to-cart]');
+        const btnText = submitBtn?.querySelector('[data-add-to-cart-text]') || submitBtn;
+        const originalText = btnText?.textContent || 'Add to Cart';
+        
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          btnText.textContent = 'Adding...';
+        }
+        
+        try {
+          const formData = new FormData(form);
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (response.ok) {
+            if (btnText) btnText.textContent = 'Added!';
+            
+            // Update cart count
+            const cartResponse = await fetch('/cart.js');
+            const cart = await cartResponse.json();
+            document.querySelectorAll('[data-cart-count]').forEach(el => {
+              el.textContent = cart.item_count;
+              el.style.display = cart.item_count > 0 ? '' : 'none';
+            });
+            
+            // Open cart drawer
+            if (typeof window.openCartDrawer === 'function') {
+              window.openCartDrawer();
+            }
+          } else {
+            const error = await response.json();
+            if (btnText) btnText.textContent = error.description || 'Error';
+          }
+        } catch (error) {
+          console.error('Add to cart error:', error);
+          if (btnText) btnText.textContent = 'Error';
+        }
+        
+        setTimeout(() => {
+          if (submitBtn) submitBtn.disabled = false;
+          if (btnText) btnText.textContent = originalText;
+        }, 2000);
+      });
+      
+      // Handle option selection
+      form.querySelectorAll('[data-option-value]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const optionContainer = btn.closest('.product-option');
+          const optionIndex = parseInt(optionContainer?.dataset.optionIndex) || 0;
+          const value = btn.dataset.optionValue;
+          
+          // Update active state
+          optionContainer?.querySelectorAll('[data-option-value]').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          
+          // Update selected value display
+          const selectedDisplay = optionContainer?.querySelector('[data-option-value]');
+          // No, that's wrong - the display is a span not a button
+          const valueDisplay = optionContainer?.querySelector('.product-option__selected');
+          if (valueDisplay) valueDisplay.textContent = value;
+          
+          // Update variant
+          this.updateVariant(form);
+        });
+      });
+    },
+    
+    updateVariant(form) {
+      const productData = form.closest('[data-product-json]');
+      if (!productData) return;
+      
+      try {
+        const product = JSON.parse(productData.textContent);
+        const options = [];
+        
+        form.querySelectorAll('.product-option').forEach(optionContainer => {
+          const activeBtn = optionContainer.querySelector('[data-option-value].is-active');
+          if (activeBtn) options.push(activeBtn.dataset.optionValue);
+        });
+        
+        // Find matching variant
+        const variant = product.variants.find(v => {
+          return options.every((opt, i) => v.options[i] === opt);
+        });
+        
+        if (variant) {
+          // Update hidden input
+          const variantInput = form.querySelector('[data-variant-id]');
+          if (variantInput) variantInput.value = variant.id;
+          
+          // Update price
+          const priceContainer = document.querySelector('[data-product-price]');
+          if (priceContainer) {
+            if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+              priceContainer.innerHTML = `
+                <span class="product-info__price-compare">${this.formatMoney(variant.compare_at_price)}</span>
+                <span class="product-info__price-sale">${this.formatMoney(variant.price)}</span>
+              `;
+            } else {
+              priceContainer.innerHTML = `
+                <span class="product-info__price-regular">${this.formatMoney(variant.price)}</span>
+              `;
+            }
+          }
+          
+          // Update add to cart button
+          const submitBtn = form.querySelector('[data-add-to-cart]');
+          const btnText = submitBtn?.querySelector('[data-add-to-cart-text]');
+          
+          if (variant.available) {
+            submitBtn.disabled = false;
+            if (btnText) btnText.textContent = 'Add to Cart';
+          } else {
+            submitBtn.disabled = true;
+            if (btnText) btnText.textContent = 'Sold Out';
+          }
+          
+          // Update URL
+          window.history.replaceState({}, '', `?variant=${variant.id}`);
+          
+          // Update gallery image
+          if (variant.featured_media) {
+            const gallery = document.querySelector('[data-product-gallery]');
+            if (gallery) {
+              gallery.querySelectorAll('.product-gallery__slide').forEach(slide => {
+                slide.classList.toggle('is-active', slide.dataset.mediaId == variant.featured_media.id);
+              });
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error updating variant:', e);
+      }
+    },
+    
+    formatMoney(cents) {
+      // Simple money formatter - adjust for your currency
+      const amount = (cents / 100).toFixed(2);
+      return window.Shopify?.currency?.format 
+        ? window.Shopify.currency.format(cents) 
+        : `$${amount}`;
+    }
+  };
+
+  // ========================
   // SEARCH
   // ========================
   
@@ -801,6 +963,7 @@
     ProductCards.init();
     Animations.init();
     QuantityControls.init();
+    ProductForm.init();
     Search.init();
     Accordions.init();
     Wishlist.init();

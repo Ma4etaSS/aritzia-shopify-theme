@@ -105,12 +105,12 @@
         
         <div class="cart-drawer__actions">
           <a href="/cart" class="btn btn--secondary cart-drawer__view-cart">View Cart</a>
-          <button type="submit" name="checkout" class="btn btn--primary cart-drawer__checkout" form="cart-form">
-            Checkout
-          </button>
+          <form action="/checkout" method="post" class="cart-drawer__checkout-form">
+            <button type="submit" name="checkout" class="btn btn--primary cart-drawer__checkout btn--full">
+              Checkout
+            </button>
+          </form>
         </div>
-        
-        <form id="cart-form" action="/checkout" method="post"></form>
       </div>
     {%- endif -%}
   </div>
@@ -366,10 +366,15 @@
 .cart-drawer__checkout {
   padding: 14px 16px;
   font-size: 11px;
+  text-align: center;
 }
 
-#cart-form {
-  display: none;
+.cart-drawer__checkout-form {
+  display: contents;
+}
+
+.cart-drawer__checkout-form .cart-drawer__checkout {
+  width: 100%;
 }
 
 /* Loading State */
