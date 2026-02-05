@@ -1,215 +1,302 @@
-{%- comment -%}
-  Collection Grid Section
-  - Displays products from the collection page
-  - Filters and sorting
-  - Pagination
-{%- endcomment -%}
-
 {%- liquid
   assign products_per_page = section.settings.products_per_page | default: 24
+  assign columns = section.settings.columns | default: 4
 -%}
 
-<section class="collection-grid section">
-  <div class="collection-grid__container container">
-    
-    {% comment %} Collection Header {% endcomment %}
-    <div class="collection-grid__header">
-      <div class="collection-grid__header-content">
-        {%- if collection.description != blank and section.settings.show_description -%}
-          <div class="collection-grid__description">{{ collection.description }}</div>
-        {%- endif -%}
-      </div>
-      
-      {% comment %} Toolbar {% endcomment %}
-      <div class="collection-grid__toolbar">
-        <div class="collection-grid__toolbar-left">
-          {% comment %} Filter Toggle {% endcomment %}
-          {%- if section.settings.enable_filtering -%}
-            <button type="button" class="collection-grid__filter-toggle" data-filter-toggle>
-              {% render 'icon-filter' %}
-              <span>Filters</span>
-            </button>
-          {%- endif -%}
-          
-          {% comment %} Results Count {% endcomment %}
-          <span class="collection-grid__count">
-            {{ collection.products_count }} {{ collection.products_count | pluralize: 'product', 'products' }}
-          </span>
+<section class="collection-page">
+  <!-- Collection Header -->
+  <div class="collection-header">
+    <div class="container">
+      <h1 class="collection-header__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <p class="collection-header__description">{{ collection.description }}</p>
+      {%- endif -%}
+      <p class="collection-header__count">{{ collection.products_count }} products</p>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="collection-toolbar">
+    <div class="container">
+      <div class="collection-toolbar__inner">
+        <!-- Filter Toggle (Mobile) -->
+        <button type="button" class="collection-toolbar__filter-btn" data-filter-toggle>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="16" y2="12"/>
+            <line x1="4" y1="18" x2="12" y2="18"/>
+          </svg>
+          <span>Filter</span>
+        </button>
+
+        <!-- Sort -->
+        <div class="collection-toolbar__sort">
+          <label for="SortBy" class="visually-hidden">Sort by</label>
+          <select name="sort_by" id="SortBy" class="collection-toolbar__select" data-sort-select>
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+                {{ option.name }}
+              </option>
+            {%- endfor -%}
+          </select>
         </div>
-        
-        {% comment %} Sort {% endcomment %}
-        {%- if section.settings.enable_sorting -%}
-          <div class="collection-grid__sort">
-            <label for="SortBy" class="visually-hidden">Sort by</label>
-            <select id="SortBy" class="collection-grid__sort-select" data-sort-select>
-              {%- for option in collection.sort_options -%}
-                <option value="{{ option.value }}"{% if option.value == collection.sort_by %} selected{% endif %}>
-                  {{ option.name }}
-                </option>
-              {%- endfor -%}
-            </select>
-          </div>
-        {%- endif -%}
+
+        <!-- View Toggle -->
+        <div class="collection-toolbar__view">
+          <button type="button" class="collection-toolbar__view-btn is-active" data-view="grid-4" aria-label="4 column grid">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+              <rect x="0" y="0" width="3" height="3"/>
+              <rect x="4.5" y="0" width="3" height="3"/>
+              <rect x="9" y="0" width="3" height="3"/>
+              <rect x="13" y="0" width="3" height="3"/>
+              <rect x="0" y="6.5" width="3" height="3"/>
+              <rect x="4.5" y="6.5" width="3" height="3"/>
+              <rect x="9" y="6.5" width="3" height="3"/>
+              <rect x="13" y="6.5" width="3" height="3"/>
+              <rect x="0" y="13" width="3" height="3"/>
+              <rect x="4.5" y="13" width="3" height="3"/>
+              <rect x="9" y="13" width="3" height="3"/>
+              <rect x="13" y="13" width="3" height="3"/>
+            </svg>
+          </button>
+          <button type="button" class="collection-toolbar__view-btn" data-view="grid-2" aria-label="2 column grid">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+              <rect x="0" y="0" width="7" height="7"/>
+              <rect x="9" y="0" width="7" height="7"/>
+              <rect x="0" y="9" width="7" height="7"/>
+              <rect x="9" y="9" width="7" height="7"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="collection-grid__main">
-      {% comment %} Filters Sidebar {% endcomment %}
-      {%- if section.settings.enable_filtering -%}
-        <aside class="collection-grid__filters" data-filters hidden>
-          <div class="collection-grid__filters-header">
-            <span class="collection-grid__filters-title">Filters</span>
-            <button type="button" class="collection-grid__filters-close" data-filter-close>
-              {% render 'icon-close' %}
-            </button>
-          </div>
-          
-          <form class="collection-grid__filters-form" data-filter-form>
-            {%- for filter in collection.filters -%}
-              <div class="collection-grid__filter" data-filter-group>
-                <button 
-                  type="button" 
-                  class="collection-grid__filter-toggle-inner"
-                  aria-expanded="true"
-                  data-filter-accordion
-                >
-                  <span>{{ filter.label }}</span>
-                  {% render 'icon-chevron-down' %}
-                </button>
-                
-                <div class="collection-grid__filter-content" data-filter-content>
-                  {%- case filter.type -%}
-                    {%- when 'list' -%}
-                      <ul class="collection-grid__filter-list" role="list">
-                        {%- for value in filter.values -%}
-                          <li class="collection-grid__filter-item">
-                            <label class="collection-grid__filter-label">
-                              <input 
-                                type="checkbox"
-                                name="{{ value.param_name }}"
-                                value="{{ value.value }}"
-                                {% if value.active %}checked{% endif %}
-                                class="collection-grid__filter-checkbox"
-                              >
-                              <span class="collection-grid__filter-text">
-                                {{ value.label }}
-                                <span class="collection-grid__filter-count">({{ value.count }})</span>
-                              </span>
-                            </label>
-                          </li>
-                        {%- endfor -%}
-                      </ul>
-                    
-                    {%- when 'price_range' -%}
-                      <div class="collection-grid__filter-price">
-                        <div class="collection-grid__filter-price-inputs">
-                          <div class="collection-grid__filter-price-field">
-                            <label for="Filter-{{ filter.label }}-GTE" class="visually-hidden">From</label>
-                            <span class="collection-grid__filter-price-currency">{{ cart.currency.symbol }}</span>
-                            <input
-                              type="number"
-                              id="Filter-{{ filter.label }}-GTE"
-                              name="{{ filter.min_value.param_name }}"
-                              value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
-                              placeholder="0"
-                              min="0"
-                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                              class="collection-grid__filter-price-input"
+  <div class="container">
+    <div class="collection-content">
+      <!-- Filters Sidebar -->
+      <aside class="collection-filters" data-filters aria-label="Filters">
+        <div class="collection-filters__header">
+          <h2 class="collection-filters__title">Filters</h2>
+          <button type="button" class="collection-filters__close" data-filter-close aria-label="Close filters">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <form method="get" action="{{ collection.url }}" data-filter-form>
+          {%- for filter in collection.filters -%}
+            <div class="collection-filter" data-filter-group>
+              <button type="button" class="collection-filter__trigger" data-filter-trigger aria-expanded="true">
+                <span>{{ filter.label }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              
+              <div class="collection-filter__content" data-filter-content>
+                {%- case filter.type -%}
+                  {%- when 'list' -%}
+                    <ul class="collection-filter__list">
+                      {%- for value in filter.values -%}
+                        <li class="collection-filter__item">
+                          <label class="collection-filter__label">
+                            <input 
+                              type="checkbox" 
+                              name="{{ value.param_name }}" 
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                              {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                              class="collection-filter__checkbox"
                             >
-                          </div>
-                          <span class="collection-grid__filter-price-separator">-</span>
-                          <div class="collection-grid__filter-price-field">
-                            <label for="Filter-{{ filter.label }}-LTE" class="visually-hidden">To</label>
-                            <span class="collection-grid__filter-price-currency">{{ cart.currency.symbol }}</span>
-                            <input
-                              type="number"
-                              id="Filter-{{ filter.label }}-LTE"
-                              name="{{ filter.max_value.param_name }}"
-                              value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
-                              placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                              min="0"
-                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                              class="collection-grid__filter-price-input"
-                            >
-                          </div>
+                            <span class="collection-filter__checkmark"></span>
+                            <span class="collection-filter__text">{{ value.label }} ({{ value.count }})</span>
+                          </label>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- when 'price_range' -%}
+                    <div class="collection-filter__price">
+                      <div class="collection-filter__price-inputs">
+                        <div class="collection-filter__price-field">
+                          <label for="Filter-{{ filter.label | handleize }}-GTE">$</label>
+                          <input 
+                            type="number" 
+                            id="Filter-{{ filter.label | handleize }}-GTE"
+                            name="{{ filter.min_value.param_name }}"
+                            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                            placeholder="0"
+                            min="0"
+                            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          >
+                        </div>
+                        <span class="collection-filter__price-separator">–</span>
+                        <div class="collection-filter__price-field">
+                          <label for="Filter-{{ filter.label | handleize }}-LTE">$</label>
+                          <input 
+                            type="number" 
+                            id="Filter-{{ filter.label | handleize }}-LTE"
+                            name="{{ filter.max_value.param_name }}"
+                            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            min="0"
+                            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          >
                         </div>
                       </div>
-                  {%- endcase -%}
-                </div>
+                    </div>
+                {%- endcase -%}
               </div>
-            {%- endfor -%}
-            
-            <div class="collection-grid__filters-actions">
-              <button type="submit" class="btn btn-primary">Apply Filters</button>
-              {%- if collection.filters != empty -%}
-                <a href="{{ collection.url }}" class="btn btn-text">Clear All</a>
-              {%- endif -%}
             </div>
-          </form>
-        </aside>
-      {%- endif -%}
+          {%- endfor -%}
 
-      {% comment %} Products Grid {% endcomment %}
-      <div class="collection-grid__products">
+          <div class="collection-filters__actions">
+            <button type="submit" class="btn btn--primary btn--small btn--full">Apply Filters</button>
+            {%- if collection.filters.size > 0 -%}
+              <a href="{{ collection.url }}" class="btn btn--secondary btn--small btn--full">Clear All</a>
+            {%- endif -%}
+          </div>
+        </form>
+      </aside>
+
+      <!-- Product Grid -->
+      <div class="collection-products">
         {%- if collection.products.size > 0 -%}
-          <div class="product-grid">
+          <div class="product-grid product-grid--{{ columns }}" data-product-grid>
             {%- paginate collection.products by products_per_page -%}
               {%- for product in collection.products -%}
-                <div class="product-grid__item">
-                  {% render 'product-card', 
-                    product: product,
-                    show_vendor: section.settings.show_vendor,
-                    show_secondary_image: section.settings.show_secondary_image,
-                    show_quick_add: section.settings.show_quick_add,
-                    lazy_load: true
-                  %}
-                </div>
-              {%- endfor -%}
-            {%- endpaginate -%}
-          </div>
-          
-          {% comment %} Pagination {% endcomment %}
-          {%- paginate collection.products by products_per_page -%}
-            {%- if paginate.pages > 1 -%}
-              <nav class="collection-grid__pagination" aria-label="Pagination">
-                <ul class="pagination" role="list">
-                  {%- if paginate.previous -%}
-                    <li class="pagination__item">
-                      <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--prev" aria-label="Previous page">
-                        {% render 'icon-chevron-left' %}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  
-                  {%- for part in paginate.parts -%}
-                    <li class="pagination__item">
-                      {%- if part.is_link -%}
-                        <a href="{{ part.url }}" class="pagination__link">{{ part.title }}</a>
+                <article class="product-card" data-product-card>
+                  <a href="{{ product.url }}" class="product-card__link">
+                    <div class="product-card__media">
+                      {%- if product.featured_media -%}
+                        <img 
+                          src="{{ product.featured_media | image_url: width: 600 }}"
+                          srcset="{{ product.featured_media | image_url: width: 400 }} 400w,
+                                  {{ product.featured_media | image_url: width: 600 }} 600w,
+                                  {{ product.featured_media | image_url: width: 800 }} 800w"
+                          sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                          alt="{{ product.featured_media.alt | escape | default: product.title }}"
+                          loading="lazy"
+                          class="product-card__image product-card__image--primary"
+                        >
+                        {%- if product.media[1] -%}
+                          <img 
+                            src="{{ product.media[1] | image_url: width: 600 }}"
+                            alt="{{ product.media[1].alt | escape | default: product.title }}"
+                            loading="lazy"
+                            class="product-card__image product-card__image--secondary"
+                          >
+                        {%- endif -%}
                       {%- else -%}
-                        {%- if part.title == paginate.current_page -%}
-                          <span class="pagination__link pagination__link--current" aria-current="page">{{ part.title }}</span>
-                        {%- else -%}
-                          <span class="pagination__link">{{ part.title }}</span>
+                        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+                      {%- endif -%}
+
+                      {%- if product.available == false -%}
+                        <span class="product-card__badge product-card__badge--sold-out">Sold Out</span>
+                      {%- elsif product.compare_at_price > product.price -%}
+                        {%- assign savings = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+                        <span class="product-card__badge product-card__badge--sale">-{{ savings }}%</span>
+                      {%- endif -%}
+                    </div>
+
+                    <div class="product-card__info">
+                      <h3 class="product-card__title">{{ product.title }}</h3>
+                      
+                      {%- if product.options_with_values.size > 0 -%}
+                        {%- assign color_option = product.options_with_values | where: "name", "Color" | first -%}
+                        {%- if color_option == blank -%}
+                          {%- assign color_option = product.options_with_values | where: "name", "Colour" | first -%}
+                        {%- endif -%}
+                        {%- if color_option -%}
+                          <p class="product-card__colors">{{ color_option.values.size }} colors</p>
                         {%- endif -%}
                       {%- endif -%}
-                    </li>
-                  {%- endfor -%}
-                  
-                  {%- if paginate.next -%}
-                    <li class="pagination__item">
-                      <a href="{{ paginate.next.url }}" class="pagination__link pagination__link--next" aria-label="Next page">
-                        {% render 'icon-chevron-right' %}
+
+                      <div class="product-card__price">
+                        {%- if product.compare_at_price > product.price -%}
+                          <span class="product-card__price-compare">{{ product.compare_at_price | money }}</span>
+                          <span class="product-card__price-sale">{{ product.price | money }}</span>
+                        {%- else -%}
+                          <span class="product-card__price-regular">{{ product.price | money }}</span>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </a>
+
+                  <button 
+                    type="button" 
+                    class="product-card__wishlist" 
+                    aria-label="Add {{ product.title }} to wishlist"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  </button>
+
+                  {%- if product.available -%}
+                    {%- if product.has_only_default_variant -%}
+                      <button 
+                        type="button" 
+                        class="product-card__quick-add" 
+                        data-quick-add="{{ product.first_available_variant.id }}"
+                        aria-label="Add {{ product.title }} to cart"
+                      >
+                        <span>Quick Add</span>
+                      </button>
+                    {%- else -%}
+                      <a href="{{ product.url }}" class="product-card__quick-add">
+                        <span>Select Options</span>
                       </a>
-                    </li>
+                    {%- endif -%}
                   {%- endif -%}
-                </ul>
-              </nav>
-            {%- endif -%}
-          {%- endpaginate -%}
+                </article>
+              {%- endfor -%}
+
+              {%- if paginate.pages > 1 -%}
+                <nav class="pagination" aria-label="Pagination">
+                  <ul class="pagination__list">
+                    {%- if paginate.previous -%}
+                      <li class="pagination__item">
+                        <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--prev" aria-label="Previous page">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <polyline points="15 18 9 12 15 6"/>
+                          </svg>
+                        </a>
+                      </li>
+                    {%- endif -%}
+
+                    {%- for part in paginate.parts -%}
+                      <li class="pagination__item">
+                        {%- if part.is_link -%}
+                          <a href="{{ part.url }}" class="pagination__link">{{ part.title }}</a>
+                        {%- else -%}
+                          <span class="pagination__link pagination__link--current" aria-current="page">{{ part.title }}</span>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+
+                    {%- if paginate.next -%}
+                      <li class="pagination__item">
+                        <a href="{{ paginate.next.url }}" class="pagination__link pagination__link--next" aria-label="Next page">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <polyline points="9 18 15 12 9 6"/>
+                          </svg>
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  </ul>
+                </nav>
+              {%- endif -%}
+            {%- endpaginate -%}
+          </div>
         {%- else -%}
-          <div class="collection-grid__empty">
-            <p>No products found in this collection.</p>
-            <a href="{{ routes.all_products_collection_url }}" class="btn btn-primary">Browse All Products</a>
+          <div class="collection-empty">
+            <p>No products found</p>
+            {%- if collection.filters.size > 0 -%}
+              <a href="{{ collection.url }}" class="btn btn--secondary">Clear filters</a>
+            {%- endif -%}
           </div>
         {%- endif -%}
       </div>
@@ -218,389 +305,670 @@
 </section>
 
 <style>
-  .collection-grid {
-    padding: var(--space-8) 0 var(--spacing-sections);
+.collection-page {
+  padding: calc(var(--header-height) + var(--announcement-height)) 0 80px;
+}
+
+/* Collection Header */
+.collection-header {
+  padding: 60px 0 40px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.collection-header__title {
+  font-family: var(--font-heading);
+  font-size: 40px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .collection-header__title {
+    font-size: 52px;
   }
+}
 
-  .collection-grid__header {
-    margin-bottom: var(--space-6);
-  }
+.collection-header__description {
+  max-width: 600px;
+  margin: 0 auto 16px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
 
-  .collection-grid__description {
-    max-width: 800px;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-6);
-  }
+.collection-header__count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 
-  .collection-grid__toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-4);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--color-border-light);
-  }
+/* Toolbar */
+.collection-toolbar {
+  position: sticky;
+  top: calc(var(--header-height) + var(--announcement-height));
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--color-border);
+  padding: 16px 0;
+}
 
-  .collection-grid__toolbar-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-  }
+.collection-toolbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
 
-  .collection-grid__filter-toggle {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    background: none;
-    border: 1px solid var(--color-border-dark);
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-  }
+.collection-toolbar__filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
-  .collection-grid__filter-toggle:hover {
-    background-color: var(--color-bg-secondary);
-  }
-
-  .collection-grid__filter-toggle svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .collection-grid__count {
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-  }
-
-  .collection-grid__sort-select {
-    min-width: 150px;
-    padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    border: 1px solid var(--color-border-dark);
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right var(--space-3) center;
-    background-size: 12px;
-    appearance: none;
-    cursor: pointer;
-  }
-
-  .collection-grid__main {
-    display: flex;
-    gap: var(--space-8);
-    align-items: flex-start;
-  }
-
-  /* Filters */
-  .collection-grid__filters {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    max-width: 350px;
-    background-color: var(--color-white);
-    z-index: var(--z-modal);
-    transform: translateX(-100%);
-    transition: transform var(--transition-slow);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .collection-grid__filters[hidden] {
-    display: flex;
-  }
-
-  .collection-grid__filters.is-active {
-    transform: translateX(0);
-  }
-
-  @media (min-width: 1024px) {
-    .collection-grid__filters {
-      position: sticky;
-      top: calc(var(--header-height) + var(--space-4));
-      width: 250px;
-      max-width: none;
-      flex-shrink: 0;
-      transform: none;
-      z-index: auto;
-    }
-
-    .collection-grid__filters[hidden] {
-      display: none;
-    }
-
-    .collection-grid__filters.is-active,
-    .collection-grid__filters:not([hidden]) {
-      display: flex;
-    }
-  }
-
-  .collection-grid__filters-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-4) var(--space-6);
-    border-bottom: 1px solid var(--color-border-light);
-  }
-
-  @media (min-width: 1024px) {
-    .collection-grid__filters-header {
-      display: none;
-    }
-  }
-
-  .collection-grid__filters-title {
-    font-size: var(--text-lg);
-    font-weight: var(--font-medium);
-    text-transform: uppercase;
-  }
-
-  .collection-grid__filters-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  .collection-grid__filters-close svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .collection-grid__filters-form {
-    flex: 1;
-    padding: var(--space-4);
-  }
-
-  @media (min-width: 1024px) {
-    .collection-grid__filters-form {
-      padding: 0;
-    }
-  }
-
-  .collection-grid__filter {
-    border-bottom: 1px solid var(--color-border-light);
-    padding: var(--space-4) 0;
-  }
-
-  .collection-grid__filter-toggle-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0;
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wide);
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  .collection-grid__filter-toggle-inner svg {
-    width: 12px;
-    height: 12px;
-    transition: transform var(--transition-fast);
-  }
-
-  .collection-grid__filter-toggle-inner[aria-expanded="false"] svg {
-    transform: rotate(-90deg);
-  }
-
-  .collection-grid__filter-content {
-    margin-top: var(--space-3);
-  }
-
-  .collection-grid__filter-toggle-inner[aria-expanded="false"] + .collection-grid__filter-content {
+@media (min-width: 1024px) {
+  .collection-toolbar__filter-btn {
     display: none;
   }
+}
 
-  .collection-grid__filter-list {
-    list-style: none;
-    max-height: 300px;
-    overflow-y: auto;
-  }
+.collection-toolbar__select {
+  padding: 10px 36px 10px 12px;
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") right 12px center no-repeat;
+  cursor: pointer;
+}
 
-  .collection-grid__filter-item {
-    margin-bottom: var(--space-2);
-  }
+.collection-toolbar__view {
+  display: none;
+  gap: 8px;
+}
 
-  .collection-grid__filter-label {
+@media (min-width: 768px) {
+  .collection-toolbar__view {
     display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    cursor: pointer;
+  }
+}
+
+.collection-toolbar__view-btn {
+  padding: 8px;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.collection-toolbar__view-btn.is-active,
+.collection-toolbar__view-btn:hover {
+  opacity: 1;
+}
+
+/* Collection Content */
+.collection-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  padding-top: 40px;
+}
+
+@media (min-width: 1024px) {
+  .collection-content {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+/* Filters */
+.collection-filters {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.collection-filters.is-open {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .collection-filters {
+    position: static;
+    transform: none;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+.collection-filters__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 1024px) {
+  .collection-filters__header {
+    border-bottom: none;
   }
 
-  .collection-grid__filter-checkbox {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--color-black);
+  .collection-filters__close {
+    display: none;
+  }
+}
+
+.collection-filters__title {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Filter Groups */
+.collection-filter {
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.collection-filter__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  background: none;
+  border: none;
+}
+
+.collection-filter__trigger svg {
+  transition: transform 0.2s ease;
+}
+
+.collection-filter__trigger[aria-expanded="false"] svg {
+  transform: rotate(-90deg);
+}
+
+.collection-filter__content {
+  padding-top: 12px;
+}
+
+.collection-filter__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.collection-filter__item {
+  margin-bottom: 8px;
+}
+
+.collection-filter__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.collection-filter__checkbox {
+  position: absolute;
+  opacity: 0;
+}
+
+.collection-filter__checkmark {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.collection-filter__checkbox:checked + .collection-filter__checkmark {
+  background: var(--color-foreground);
+  border-color: var(--color-foreground);
+}
+
+.collection-filter__checkbox:checked + .collection-filter__checkmark::after {
+  content: '';
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.collection-filter__text {
+  color: var(--color-text-muted);
+}
+
+/* Price Filter */
+.collection-filter__price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.collection-filter__price-field {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  padding: 0 10px;
+}
+
+.collection-filter__price-field label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.collection-filter__price-field input {
+  width: 60px;
+  padding: 10px 8px;
+  border: none;
+  font-size: 13px;
+  -moz-appearance: textfield;
+}
+
+.collection-filter__price-field input::-webkit-outer-spin-button,
+.collection-filter__price-field input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.collection-filter__price-separator {
+  color: var(--color-text-muted);
+}
+
+.collection-filters__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+@media (min-width: 1024px) {
+  .collection-filters__actions {
+    display: none;
+  }
+}
+
+/* Product Grid */
+.product-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 768px) {
+  .product-grid {
+    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid--4 {
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  .collection-grid__filter-text {
-    font-size: var(--text-sm);
+  .product-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
   }
+}
 
-  .collection-grid__filter-count {
-    color: var(--color-text-muted);
-  }
+/* Product Card */
+.product-card {
+  position: relative;
+}
 
-  .collection-grid__filter-price-inputs {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
+.product-card__link {
+  display: block;
+}
 
-  .collection-grid__filter-price-field {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--color-border-medium);
-    padding: var(--space-2);
-  }
+.product-card__media {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: #f5f5f5;
+  margin-bottom: 12px;
+}
 
-  .collection-grid__filter-price-currency {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-  }
+.product-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease;
+}
 
-  .collection-grid__filter-price-input {
-    width: 60px;
-    border: none;
-    padding: 0 var(--space-2);
-    font-size: var(--text-sm);
-  }
+.product-card__image--secondary {
+  opacity: 0;
+}
 
-  .collection-grid__filter-price-input:focus {
-    outline: none;
-  }
+.product-card:hover .product-card__image--primary {
+  opacity: 0;
+}
 
-  .collection-grid__filter-price-separator {
-    color: var(--color-text-muted);
-  }
+.product-card:hover .product-card__image--secondary {
+  opacity: 1;
+}
 
-  .collection-grid__filters-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding-top: var(--space-4);
-  }
+.product-card__placeholder {
+  width: 100%;
+  height: 100%;
+}
 
-  /* Products */
-  .collection-grid__products {
-    flex: 1;
-    min-width: 0;
-  }
+.product-card__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
-  .collection-grid__empty {
-    text-align: center;
-    padding: var(--space-16) 0;
-  }
+.product-card__badge--sale {
+  background: #fff;
+  color: #dc2626;
+}
 
-  .collection-grid__empty p {
-    margin-bottom: var(--space-6);
-    color: var(--color-text-secondary);
-  }
+.product-card__badge--sold-out {
+  background: #000;
+  color: #fff;
+}
 
-  /* Pagination */
-  .collection-grid__pagination {
-    margin-top: var(--space-10);
-  }
+.product-card__info {
+  padding: 0 4px;
+}
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-1);
-    list-style: none;
-  }
+.product-card__title {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
 
-  .pagination__link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 0 var(--space-2);
-    font-size: var(--text-sm);
-    border: 1px solid transparent;
-    transition: border-color var(--transition-fast);
-  }
+.product-card__colors {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
 
-  .pagination__link:hover {
-    border-color: var(--color-border-dark);
-    opacity: 1;
-  }
+.product-card__price {
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+}
 
-  .pagination__link--current {
-    border-color: var(--color-border-dark);
-    font-weight: var(--font-medium);
-  }
+.product-card__price-compare {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
 
-  .pagination__link svg {
-    width: 16px;
-    height: 16px;
-  }
+.product-card__price-sale {
+  color: #dc2626;
+}
+
+.product-card__wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.product-card:hover .product-card__wishlist {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.product-card__wishlist:hover {
+  background: var(--color-foreground);
+  color: #fff;
+}
+
+.product-card__quick-add {
+  position: absolute;
+  bottom: 80px;
+  left: 12px;
+  right: 12px;
+  background: #fff;
+  border: 1px solid var(--color-foreground);
+  padding: 12px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+}
+
+.product-card:hover .product-card__quick-add {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card__quick-add:hover {
+  background: var(--color-foreground);
+  color: #fff;
+}
+
+/* Pagination */
+.pagination {
+  grid-column: 1 / -1;
+  margin-top: 40px;
+}
+
+.pagination__list {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.pagination__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.pagination__link:hover {
+  border-color: var(--color-foreground);
+}
+
+.pagination__link--current {
+  background: var(--color-foreground);
+  color: #fff;
+  border-color: var(--color-foreground);
+}
+
+/* Empty State */
+.collection-empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--color-text-muted);
+}
+
+.collection-empty p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
 </style>
+
+<script>
+(function() {
+  const collectionPage = document.querySelector('.collection-page');
+  if (!collectionPage) return;
+
+  // Sort Select
+  const sortSelect = collectionPage.querySelector('[data-sort-select]');
+  sortSelect?.addEventListener('change', function() {
+    const url = new URL(window.location);
+    url.searchParams.set('sort_by', this.value);
+    window.location = url;
+  });
+
+  // Filter Toggle
+  const filterToggle = collectionPage.querySelector('[data-filter-toggle]');
+  const filters = collectionPage.querySelector('[data-filters]');
+  const filterClose = collectionPage.querySelector('[data-filter-close]');
+
+  filterToggle?.addEventListener('click', () => {
+    filters.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  filterClose?.addEventListener('click', () => {
+    filters.classList.remove('is-open');
+    document.body.style.overflow = '';
+  });
+
+  // Filter Accordions
+  collectionPage.querySelectorAll('[data-filter-trigger]').forEach(trigger => {
+    trigger.addEventListener('click', function() {
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+      this.nextElementSibling.style.display = isExpanded ? 'none' : 'block';
+    });
+  });
+
+  // Auto-submit filters on desktop
+  if (window.innerWidth >= 1024) {
+    const filterForm = collectionPage.querySelector('[data-filter-form]');
+    filterForm?.querySelectorAll('input').forEach(input => {
+      input.addEventListener('change', () => {
+        filterForm.submit();
+      });
+    });
+  }
+
+  // View Toggle
+  const viewBtns = collectionPage.querySelectorAll('[data-view]');
+  const productGrid = collectionPage.querySelector('[data-product-grid]');
+
+  viewBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      viewBtns.forEach(b => b.classList.remove('is-active'));
+      this.classList.add('is-active');
+      
+      const view = this.dataset.view;
+      productGrid.classList.remove('product-grid--4', 'product-grid--2', 'product-grid--3');
+      productGrid.classList.add(`product-grid--${view.split('-')[1]}`);
+    });
+  });
+
+  // Quick Add
+  collectionPage.querySelectorAll('[data-quick-add]').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const variantId = this.dataset.quickAdd;
+      const originalText = this.querySelector('span').textContent;
+      
+      this.querySelector('span').textContent = 'Adding...';
+      this.disabled = true;
+      
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: 1 })
+        });
+        
+        if (response.ok) {
+          this.querySelector('span').textContent = 'Added!';
+          
+          // Update cart count
+          const cartResponse = await fetch('/cart.js');
+          const cart = await cartResponse.json();
+          document.querySelectorAll('[data-cart-count]').forEach(el => {
+            el.textContent = cart.item_count;
+          });
+          
+          // Open cart drawer
+          if (typeof window.openCartDrawer === 'function') {
+            window.openCartDrawer();
+          }
+        }
+      } catch (error) {
+        this.querySelector('span').textContent = 'Error';
+      }
+      
+      setTimeout(() => {
+        this.querySelector('span').textContent = originalText;
+        this.disabled = false;
+      }, 1500);
+    });
+  });
+})();
+</script>
 
 {% schema %}
 {
-  "name": "Collection grid",
-  "class": "section-collection-grid",
+  "name": "Collection Grid",
+  "tag": "section",
+  "class": "section-collection",
   "settings": [
     {
       "type": "range",
       "id": "products_per_page",
-      "label": "Products per page",
       "min": 12,
       "max": 48,
-      "step": 12,
-      "default": 24
+      "step": 4,
+      "default": 24,
+      "label": "Products per page"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Products per row (desktop)",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
     },
     {
       "type": "checkbox",
-      "id": "show_description",
-      "label": "Show collection description",
+      "id": "show_filters",
+      "label": "Show filters",
       "default": true
     },
     {
       "type": "checkbox",
-      "id": "enable_filtering",
-      "label": "Enable filtering",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_sorting",
-      "label": "Enable sorting",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Product cards"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show vendor",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_secondary_image",
-      "label": "Show secondary image on hover",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_quick_add",
-      "label": "Show quick add button",
+      "id": "show_sort",
+      "label": "Show sort",
       "default": true
     }
   ]

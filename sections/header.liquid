@@ -1,165 +1,236 @@
 {%- liquid
-  assign transparent_header = false
-  if template.name == 'index'
-    assign transparent_header = true
+  assign is_transparent = false
+  if template.name == 'index' and section.settings.transparent_header
+    assign is_transparent = true
   endif
 -%}
 
-<header class="header {% if transparent_header %}header--transparent{% else %}header--solid{% endif %}" data-header role="banner">
-  <div class="header__wrapper">
+<header class="header {% if is_transparent %}header--transparent{% endif %}" data-header>
+  <div class="header__inner">
+    <!-- Mobile Menu Toggle -->
+    <button type="button" class="header__menu-toggle" data-menu-toggle aria-label="Open menu">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
     <!-- Logo -->
-    <a href="/" class="header__logo" aria-label="{{ shop.name }} - Home">
-      {{ shop.name }}
-    </a>
+    <div class="header__logo">
+      <a href="/" class="header__logo-link">
+        {%- if settings.logo != blank -%}
+          <img 
+            src="{{ settings.logo | image_url: width: 300 }}"
+            alt="{{ shop.name }}"
+            class="header__logo-image"
+            width="150"
+            height="auto"
+            loading="eager"
+          >
+        {%- else -%}
+          <span class="header__logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </div>
 
-    <!-- Desktop Navigation -->
-    <nav class="header__nav" role="navigation" aria-label="Main navigation">
-      <div class="header__nav-item" data-nav-item>
-        <button type="button" class="header__nav-button" aria-expanded="false" aria-haspopup="true">
-          <span>New</span>
-          <svg class="header__nav-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="mega-menu" aria-hidden="true">
-          <div class="mega-menu__grid">
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Categories</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">All New</a>
-                <a href="/collections/all" class="mega-menu__link">New This Week</a>
-                <a href="/collections/all" class="mega-menu__link">Back In Stock</a>
-              </nav>
-            </div>
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Featured</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">Work Wardrobe</a>
-                <a href="/collections/all" class="mega-menu__link">Valentine's Day</a>
-                <a href="/collections/all" class="mega-menu__link">The Pre-Spring Collection</a>
-                <a href="/collections/all" class="mega-menu__link">Must-Haves</a>
-              </nav>
-            </div>
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Trends</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">After Dark</a>
-                <a href="/collections/all" class="mega-menu__link">Villa Blue</a>
-              </nav>
-            </div>
-            <div class="mega-menu__column mega-menu__column--empty"></div>
-            <div class="mega-menu__images">
-              <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=500&fit=crop&auto=format" alt="Work Wardrobe collection" loading="lazy">
-                <span class="mega-menu__image-label">Work Wardrobe</span>
-              </a>
-              <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&h=500&fit=crop&auto=format" alt="After Dark collection" loading="lazy">
-                <span class="mega-menu__image-label">After Dark</span>
-              </a>
+    <!-- Main Navigation -->
+    <nav class="header__nav" aria-label="Main navigation">
+      <ul class="header__nav-list">
+        <!-- New -->
+        <li class="header__nav-item has-mega-menu">
+          <button type="button" class="header__nav-link" data-mega-menu-trigger aria-expanded="false" aria-haspopup="true">
+            <span>New</span>
+            <svg class="header__nav-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="mega-menu" aria-hidden="true">
+            <div class="mega-menu__inner">
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Featured</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">All New</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">New This Week</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Back In Stock</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Collections</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">Work Wardrobe</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Valentine's Day</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Pre-Spring</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Lunar New Year</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__image">
+                <a href="/collections/all">
+                  <img 
+                    src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop" 
+                    alt="New Arrivals" 
+                    loading="lazy"
+                  >
+                  <span class="mega-menu__image-caption">Shop New Arrivals</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </li>
 
-      <div class="header__nav-item" data-nav-item>
-        <button type="button" class="header__nav-button" aria-expanded="false" aria-haspopup="true">
-          <span>Clothing</span>
-          <svg class="header__nav-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="mega-menu" aria-hidden="true">
-          <div class="mega-menu__grid">
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Tops</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">All Tops</a>
-                <a href="/collections/all" class="mega-menu__link">T-Shirts</a>
-                <a href="/collections/all" class="mega-menu__link">Blouses</a>
-                <a href="/collections/all" class="mega-menu__link">Bodysuits</a>
-              </nav>
-            </div>
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Bottoms</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">All Bottoms</a>
-                <a href="/collections/all" class="mega-menu__link">Pants</a>
-                <a href="/collections/all" class="mega-menu__link">Jeans</a>
-                <a href="/collections/all" class="mega-menu__link">Skirts</a>
-              </nav>
-            </div>
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Dresses</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">All Dresses</a>
-                <a href="/collections/all" class="mega-menu__link">Mini</a>
-                <a href="/collections/all" class="mega-menu__link">Midi</a>
-                <a href="/collections/all" class="mega-menu__link">Maxi</a>
-              </nav>
-            </div>
-            <div class="mega-menu__column">
-              <h4 class="mega-menu__heading">Outerwear</h4>
-              <nav class="mega-menu__links">
-                <a href="/collections/all" class="mega-menu__link">All Outerwear</a>
-                <a href="/collections/all" class="mega-menu__link">Jackets</a>
-                <a href="/collections/all" class="mega-menu__link">Coats</a>
-                <a href="/collections/all" class="mega-menu__link">Blazers</a>
-              </nav>
-            </div>
-            <div class="mega-menu__images">
-              <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop&auto=format" alt="Dresses collection" loading="lazy">
-                <span class="mega-menu__image-label">Dresses</span>
-              </a>
-              <a href="/collections/all" class="mega-menu__image-card">
-                <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=400&h=500&fit=crop&auto=format" alt="Jackets and Coats collection" loading="lazy">
-                <span class="mega-menu__image-label">Jackets & Coats</span>
-              </a>
+        <!-- Clothing -->
+        <li class="header__nav-item has-mega-menu">
+          <button type="button" class="header__nav-link" data-mega-menu-trigger aria-expanded="false" aria-haspopup="true">
+            <span>Clothing</span>
+            <svg class="header__nav-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="mega-menu" aria-hidden="true">
+            <div class="mega-menu__inner">
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Tops</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">All Tops</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">T-Shirts</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Blouses</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Bodysuits</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Sweaters</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Sweatshirts</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Bottoms</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">All Bottoms</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Pants</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Jeans</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Skirts</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Shorts</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Leggings</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Dresses & Jumpsuits</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">All Dresses</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Mini</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Midi</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Maxi</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Jumpsuits</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Outerwear</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">All Outerwear</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Jackets</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Coats</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Blazers</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Vests</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__image">
+                <a href="/collections/all">
+                  <img 
+                    src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop" 
+                    alt="Shop Clothing" 
+                    loading="lazy"
+                  >
+                  <span class="mega-menu__image-caption">Shop All Clothing</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </li>
 
-      <a href="/collections/all" class="header__nav-link">The Super Puff™</a>
-      <a href="/collections/all" class="header__nav-link">Sweatfleece</a>
-      <a href="/collections/all" class="header__nav-link">Accessories</a>
-      <a href="/collections/all" class="header__nav-link">Brands</a>
+        <!-- The Super Puff -->
+        <li class="header__nav-item">
+          <a href="/collections/all" class="header__nav-link">The Super Puff™</a>
+        </li>
+
+        <!-- Sweatfleece -->
+        <li class="header__nav-item">
+          <a href="/collections/all" class="header__nav-link">Sweatfleece</a>
+        </li>
+
+        <!-- Accessories -->
+        <li class="header__nav-item has-mega-menu">
+          <button type="button" class="header__nav-link" data-mega-menu-trigger aria-expanded="false" aria-haspopup="true">
+            <span>Accessories</span>
+            <svg class="header__nav-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="mega-menu" aria-hidden="true">
+            <div class="mega-menu__inner">
+              <div class="mega-menu__column">
+                <p class="mega-menu__heading">Accessories</p>
+                <ul class="mega-menu__list">
+                  <li><a href="/collections/all" class="mega-menu__link">All Accessories</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Bags</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Hats</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Scarves</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Belts</a></li>
+                  <li><a href="/collections/all" class="mega-menu__link">Jewelry</a></li>
+                </ul>
+              </div>
+              <div class="mega-menu__image">
+                <a href="/collections/all">
+                  <img 
+                    src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=500&fit=crop" 
+                    alt="Shop Accessories" 
+                    loading="lazy"
+                  >
+                  <span class="mega-menu__image-caption">Shop Accessories</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Brands -->
+        <li class="header__nav-item">
+          <a href="/collections/all" class="header__nav-link">Brands</a>
+        </li>
+      </ul>
     </nav>
 
-    <!-- Header Icons -->
-    <div class="header__icons">
-      <button class="header__icon header__search" type="button" aria-label="Open search">
+    <!-- Header Actions -->
+    <div class="header__actions">
+      <!-- Search -->
+      <button type="button" class="header__action" data-search-toggle aria-label="Search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
           <circle cx="11" cy="11" r="8"/>
-          <path d="M21 21l-4.35-4.35"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <span class="header__icon-text">Search</span>
       </button>
 
-      <a href="/account" class="header__icon" aria-label="My account">
+      <!-- Account -->
+      <a href="/account" class="header__action header__action--desktop" aria-label="Account">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
       </a>
 
-      <a href="/pages/wishlist" class="header__icon" aria-label="Wishlist">
+      <!-- Wishlist -->
+      <a href="/pages/wishlist" class="header__action header__action--desktop" aria-label="Wishlist">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
         </svg>
+        <span class="header__action-count" data-wishlist-count style="display: none;">0</span>
       </a>
 
-      <a href="/account/login" class="header__icon header__signin" aria-label="Sign in to your account">
-        <span>Sign In</span>
-      </a>
-
-      <button class="header__menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="21" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
+      <!-- Cart -->
+      <button type="button" class="header__action" data-cart-toggle aria-label="Cart">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+          <path d="M6 6h15l-1.5 9h-12z"/>
+          <circle cx="9" cy="20" r="1"/>
+          <circle cx="18" cy="20" r="1"/>
+          <path d="M6 6L5 3H2"/>
         </svg>
+        <span class="header__action-count" data-cart-count {% if cart.item_count == 0 %}style="display: none;"{% endif %}>{{ cart.item_count }}</span>
       </button>
     </div>
   </div>
@@ -168,59 +239,112 @@
 <style>
 .header {
   position: fixed;
-  top: var(--announcement-height, 40px);
+  top: var(--announcement-height);
   left: 0;
   right: 0;
   z-index: 1000;
-  transition: background-color 0.3s ease, color 0.3s ease, top 0.3s ease;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  transition: all 0.3s ease;
 }
 
 .header--transparent {
-  background-color: transparent;
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+.header--transparent:not(.header--scrolled) .header__logo-text,
+.header--transparent:not(.header--scrolled) .header__nav-link,
+.header--transparent:not(.header--scrolled) .header__action {
   color: #fff;
 }
 
-.header--solid {
-  background-color: #fff;
-  color: #000;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+.header--transparent:not(.header--scrolled) .mega-menu {
+  background: #fff;
+  color: var(--color-text);
 }
 
-.header__wrapper {
+.header--scrolled {
+  background: var(--color-background);
+  border-bottom-color: var(--color-border);
+}
+
+.header--scrolled .header__logo-text,
+.header--scrolled .header__nav-link,
+.header--scrolled .header__action {
+  color: var(--color-text);
+}
+
+.header--hidden {
+  transform: translateY(-100%);
+}
+
+.header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--header-height, 60px);
-  padding: 0 20px;
-  max-width: 1600px;
+  height: var(--header-height);
+  padding: 0 var(--container-padding);
+  max-width: var(--container-max);
   margin: 0 auto;
 }
 
+/* Mobile Menu Toggle */
+.header__menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-left: -8px;
+}
+
 @media (min-width: 1024px) {
-  .header__wrapper {
-    padding: 0 40px;
-    height: 70px;
+  .header__menu-toggle {
+    display: none;
   }
 }
 
 /* Logo */
 .header__logo {
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transition: opacity 0.2s ease;
+  flex-shrink: 0;
 }
 
 @media (min-width: 1024px) {
   .header__logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.header__logo-link {
+  display: block;
+}
+
+.header__logo-text {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .header__logo-text {
     font-size: 26px;
   }
 }
 
-.header__logo:hover {
-  opacity: 0.7;
+.header__logo-image {
+  height: 28px;
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .header__logo-image {
+    height: 34px;
+  }
 }
 
 /* Navigation */
@@ -230,318 +354,205 @@
 
 @media (min-width: 1024px) {
   .header__nav {
-    display: flex;
-    align-items: center;
-    gap: 28px;
+    display: block;
   }
+}
+
+.header__nav-list {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
 }
 
 .header__nav-item {
   position: relative;
 }
 
-.header__nav-button,
 .header__nav-link {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
   padding: 8px 0;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   transition: opacity 0.2s ease;
 }
 
-.header__nav-button:hover,
 .header__nav-link:hover {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .header__nav-arrow {
   transition: transform 0.2s ease;
 }
 
-.header__nav-item:hover .header__nav-arrow {
+.header__nav-link[aria-expanded="true"] .header__nav-arrow {
   transform: rotate(180deg);
 }
 
 /* Mega Menu */
 .mega-menu {
-  position: fixed;
-  top: calc(var(--announcement-height, 40px) + var(--header-height, 60px));
-  left: 0;
-  right: 0;
-  background: #fff;
-  color: #000;
-  padding: 48px 40px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 600px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
   transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  max-height: calc(100vh - var(--announcement-height, 40px) - var(--header-height, 60px));
-  overflow-y: auto;
+  z-index: 100;
 }
 
-@media (min-width: 1024px) {
-  .mega-menu {
-    top: calc(var(--announcement-height, 40px) + 70px);
-  }
-}
-
-.header__nav-item:hover .mega-menu,
-.header__nav-item:focus-within .mega-menu {
+.mega-menu.is-visible {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
 }
 
-.mega-menu__grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr) 2fr;
+.mega-menu__inner {
+  display: flex;
+  padding: 32px;
   gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+}
+
+.mega-menu__column {
+  min-width: 140px;
 }
 
 .mega-menu__heading {
-  font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 20px;
-  color: #666;
+  margin-bottom: 16px;
+  color: var(--color-text);
 }
 
-.mega-menu__links {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.mega-menu__list {
+  list-style: none;
 }
 
 .mega-menu__link {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: #000;
-  transition: opacity 0.2s ease;
+  display: block;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease;
 }
 
 .mega-menu__link:hover {
-  opacity: 0.6;
+  color: var(--color-text);
 }
 
-.mega-menu__link:focus {
-  outline: 1px solid #000;
-  outline-offset: 2px;
+.mega-menu__image {
+  flex-shrink: 0;
+  width: 200px;
 }
 
-.mega-menu__images {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.mega-menu__image-card {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 3/4;
+.mega-menu__image a {
   display: block;
+  position: relative;
 }
 
-.mega-menu__image-card img {
+.mega-menu__image img {
   width: 100%;
-  height: 100%;
+  height: 250px;
   object-fit: cover;
-  transition: transform 0.5s ease;
 }
 
-.mega-menu__image-card:hover img {
-  transform: scale(1.05);
-}
-
-.mega-menu__image-label {
+.mega-menu__image-caption {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
-  font-family: var(--font-body);
-  font-size: 13px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.5));
+  color: #fff;
+  font-size: 12px;
   font-weight: 500;
-  color: #000;
-  background: #fff;
-  padding: 8px 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-/* Header Icons */
-.header__icons {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-@media (min-width: 1024px) {
-  .header__icons {
-    gap: 20px;
-  }
-}
-
-.header__icon {
+/* Actions */
+.header__actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-body);
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  padding: 4px;
 }
 
-.header__icon:hover {
-  opacity: 0.7;
-}
-
-.header__icon:focus {
-  outline: 1px solid currentColor;
-  outline-offset: 2px;
-}
-
-.header__icon-text {
-  display: none;
-}
-
-@media (min-width: 1024px) {
-  .header__icon-text {
-    display: inline;
+@media (min-width: 768px) {
+  .header__actions {
+    gap: 16px;
   }
 }
 
-.header__signin {
+.header__action {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: opacity 0.2s ease;
+}
+
+.header__action:hover {
+  opacity: 0.6;
+}
+
+.header__action--desktop {
   display: none;
 }
 
-@media (min-width: 1024px) {
-  .header__signin {
+@media (min-width: 768px) {
+  .header__action--desktop {
     display: flex;
   }
 }
 
-/* Mobile Menu Button */
-.header__menu-toggle {
+.header__action-count {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--color-foreground);
+  color: var(--color-background);
+  font-size: 10px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
+  border-radius: 8px;
 }
 
-@media (min-width: 1024px) {
-  .header__menu-toggle {
-    display: none;
-  }
+.header--transparent:not(.header--scrolled) .header__action-count {
+  background: #fff;
+  color: #000;
 }
 </style>
-
-<script>
-(function() {
-  const header = document.querySelector('[data-header]');
-  if (!header) return;
-
-  let lastScroll = 0;
-  const isHomepage = document.body.classList.contains('template-index');
-
-  function updateHeader() {
-    const scroll = window.scrollY;
-
-    if (isHomepage) {
-      if (scroll > 100) {
-        header.classList.remove('header--transparent');
-        header.classList.add('header--solid');
-      } else {
-        header.classList.add('header--transparent');
-        header.classList.remove('header--solid');
-      }
-    }
-
-    lastScroll = scroll;
-  }
-
-  window.addEventListener('scroll', updateHeader, { passive: true });
-  updateHeader();
-
-  // Mega menu accessibility
-  const navItems = header.querySelectorAll('[data-nav-item]');
-  navItems.forEach(item => {
-    const button = item.querySelector('.header__nav-button');
-    const menu = item.querySelector('.mega-menu');
-    
-    if (button && menu) {
-      button.addEventListener('click', function() {
-        const isExpanded = this.getAttribute('aria-expanded') === 'true';
-        this.setAttribute('aria-expanded', !isExpanded);
-        menu.setAttribute('aria-hidden', isExpanded);
-      });
-
-      // Close on escape
-      item.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          button.setAttribute('aria-expanded', 'false');
-          menu.setAttribute('aria-hidden', 'true');
-          button.focus();
-        }
-      });
-    }
-  });
-})();
-</script>
 
 {% schema %}
 {
   "name": "Header",
-  "class": "section-header",
   "settings": [
     {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
-    },
-    {
-      "type": "range",
-      "id": "logo_width",
-      "min": 50,
-      "max": 300,
-      "step": 10,
-      "default": 150,
-      "label": "Logo width"
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu",
-      "default": "main-menu"
-    },
-    {
       "type": "checkbox",
-      "id": "enable_search",
-      "label": "Enable search",
+      "id": "transparent_header",
+      "label": "Transparent header on homepage",
       "default": true
     },
     {
       "type": "checkbox",
-      "id": "enable_account",
-      "label": "Enable account link",
+      "id": "sticky_header",
+      "label": "Sticky header",
       "default": true
     }
   ]

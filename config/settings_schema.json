@@ -1,11 +1,11 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Aritzia Clone",
-    "theme_version": "1.0.0",
-    "theme_author": "Custom",
-    "theme_documentation_url": "https://github.com/",
-    "theme_support_url": "https://github.com/"
+    "theme_name": "Aritzia Style Theme",
+    "theme_version": "2.0.0",
+    "theme_author": "Custom Theme",
+    "theme_documentation_url": "https://shopify.dev",
+    "theme_support_url": "https://shopify.dev"
   },
   {
     "name": "Logo",
@@ -13,17 +13,17 @@
       {
         "type": "image_picker",
         "id": "logo",
-        "label": "Logo"
+        "label": "Logo image"
       },
       {
         "type": "range",
         "id": "logo_width",
-        "label": "Logo width",
         "min": 50,
         "max": 300,
         "step": 10,
-        "default": 120,
-        "unit": "px"
+        "unit": "px",
+        "label": "Logo width",
+        "default": 150
       },
       {
         "type": "image_picker",
@@ -41,35 +41,15 @@
       },
       {
         "type": "color",
-        "id": "color_primary",
-        "label": "Primary",
-        "default": "#000000"
-      },
-      {
-        "type": "color",
-        "id": "color_secondary",
-        "label": "Secondary",
-        "default": "#FFFFFF"
-      },
-      {
-        "type": "header",
-        "content": "Background colors"
-      },
-      {
-        "type": "color",
         "id": "color_background",
         "label": "Background",
-        "default": "#FFFFFF"
+        "default": "#ffffff"
       },
       {
         "type": "color",
-        "id": "color_background_secondary",
-        "label": "Secondary background",
-        "default": "#F5F5F5"
-      },
-      {
-        "type": "header",
-        "content": "Text colors"
+        "id": "color_foreground",
+        "label": "Foreground",
+        "default": "#000000"
       },
       {
         "type": "color",
@@ -79,19 +59,21 @@
       },
       {
         "type": "color",
-        "id": "color_text_secondary",
-        "label": "Secondary text",
+        "id": "color_text_muted",
+        "label": "Muted text",
         "default": "#666666"
       },
       {
-        "type": "header",
-        "content": "Accent colors"
+        "type": "color",
+        "id": "color_border",
+        "label": "Borders",
+        "default": "#e5e5e5"
       },
       {
         "type": "color",
-        "id": "color_sale",
-        "label": "Sale badge",
-        "default": "#C41E3A"
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#000000"
       }
     ]
   },
@@ -104,9 +86,9 @@
       },
       {
         "type": "font_picker",
-        "id": "font_heading",
+        "id": "heading_font",
         "label": "Heading font",
-        "default": "playfair_display_n4"
+        "default": "cormorant_garamond_n4"
       },
       {
         "type": "header",
@@ -114,77 +96,9 @@
       },
       {
         "type": "font_picker",
-        "id": "font_body",
+        "id": "body_font",
         "label": "Body font",
         "default": "assistant_n4"
-      },
-      {
-        "type": "range",
-        "id": "font_body_size",
-        "label": "Base font size",
-        "min": 14,
-        "max": 18,
-        "step": 1,
-        "default": 16,
-        "unit": "px"
-      }
-    ]
-  },
-  {
-    "name": "Layout",
-    "settings": [
-      {
-        "type": "range",
-        "id": "page_width",
-        "label": "Page width",
-        "min": 1000,
-        "max": 1600,
-        "step": 20,
-        "default": 1440,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "spacing_sections",
-        "label": "Vertical space between sections",
-        "min": 20,
-        "max": 100,
-        "step": 4,
-        "default": 60,
-        "unit": "px"
-      }
-    ]
-  },
-  {
-    "name": "Cart",
-    "settings": [
-      {
-        "type": "select",
-        "id": "cart_type",
-        "label": "Cart type",
-        "options": [
-          {
-            "value": "drawer",
-            "label": "Drawer"
-          },
-          {
-            "value": "page",
-            "label": "Page"
-          }
-        ],
-        "default": "drawer"
-      },
-      {
-        "type": "checkbox",
-        "id": "cart_show_free_shipping",
-        "label": "Show free shipping progress",
-        "default": true
-      },
-      {
-        "type": "text",
-        "id": "cart_free_shipping_threshold",
-        "label": "Free shipping threshold",
-        "default": "100"
       }
     ]
   },
@@ -197,20 +111,20 @@
       },
       {
         "type": "text",
-        "id": "social_instagram_link",
-        "label": "Instagram",
-        "info": "https://instagram.com/yourstore"
-      },
-      {
-        "type": "text",
         "id": "social_facebook_link",
         "label": "Facebook",
         "info": "https://facebook.com/yourstore"
       },
       {
         "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "https://instagram.com/yourstore"
+      },
+      {
+        "type": "text",
         "id": "social_twitter_link",
-        "label": "Twitter",
+        "label": "Twitter/X",
         "info": "https://twitter.com/yourstore"
       },
       {
@@ -234,25 +148,45 @@
     ]
   },
   {
-    "name": "Search",
+    "name": "Currency format",
     "settings": [
       {
-        "type": "checkbox",
-        "id": "predictive_search_enabled",
-        "label": "Enable predictive search",
-        "default": true
+        "type": "header",
+        "content": "Currency"
       },
       {
         "type": "checkbox",
-        "id": "predictive_search_show_vendor",
-        "label": "Show product vendor",
+        "id": "currency_show_code",
+        "label": "Show currency code",
         "default": false
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cart drawer"
       },
       {
         "type": "checkbox",
-        "id": "predictive_search_show_price",
-        "label": "Show product price",
+        "id": "cart_drawer_enabled",
+        "label": "Enable cart drawer",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_free_shipping",
+        "label": "Show free shipping progress",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "default": "150",
+        "info": "Enter amount without currency symbol"
       }
     ]
   }

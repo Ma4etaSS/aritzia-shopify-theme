@@ -1,0 +1,70 @@
+<section class="page-404">
+  <div class="container">
+    <div class="page-404__content">
+      <h1 class="page-404__title">404</h1>
+      <p class="page-404__subtitle">Page Not Found</p>
+      <p class="page-404__text">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+      <a href="/" class="btn btn--primary">Return Home</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.page-404 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: calc(var(--header-height) + var(--announcement-height)) 0;
+}
+
+.page-404__content {
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.page-404__title {
+  font-family: var(--font-heading);
+  font-size: 120px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .page-404__title {
+    font-size: 180px;
+  }
+}
+
+.page-404__subtitle {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .page-404__subtitle {
+    font-size: 32px;
+  }
+}
+
+.page-404__text {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+</style>
+
+{% schema %}
+{
+  "name": "404 Page",
+  "tag": "section",
+  "class": "section-404"
+}
+{% endschema %}

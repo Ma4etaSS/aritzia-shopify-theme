@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="">
+  <meta name="theme-color" content="{{ settings.color_background | default: '#ffffff' }}">
   <link rel="canonical" href="{{ canonical_url }}">
 
   {%- if settings.favicon != blank -%}
@@ -28,24 +28,46 @@
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
 
-  <!-- Fonts - Similar to Aritzia -->
+  <!-- Fonts - Aritzia Style -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+  <!-- Theme Stylesheet -->
   {{ 'base.css' | asset_url | stylesheet_tag }}
   
   {{ content_for_header }}
 
   <style>
     :root {
-      --font-heading: 'Cormorant Garamond', Georgia, serif;
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --color-background: #ffffff;
-      --color-foreground: #000000;
-      --color-text: #000000;
-      --color-text-muted: #666666;
-      --color-border: #e5e5e5;
+      /* Typography */
+      --font-heading: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      
+      /* Colors */
+      --color-background: {{ settings.color_background | default: '#ffffff' }};
+      --color-foreground: {{ settings.color_foreground | default: '#000000' }};
+      --color-text: {{ settings.color_text | default: '#000000' }};
+      --color-text-muted: {{ settings.color_text_muted | default: '#666666' }};
+      --color-border: {{ settings.color_border | default: '#e5e5e5' }};
+      --color-border-light: #f0f0f0;
+      --color-accent: {{ settings.color_accent | default: '#000000' }};
+      --color-sale: #dc2626;
+      
+      /* Layout */
       --header-height: 60px;
       --announcement-height: 40px;
+      --container-max: 1440px;
+      --container-padding: 20px;
+      
+      /* Transitions */
+      --transition-fast: 0.2s ease;
+      --transition-medium: 0.3s ease;
+      --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @media (min-width: 768px) {
+      :root {
+        --container-padding: 40px;
+      }
     }
     
     @media (min-width: 1024px) {
@@ -53,11 +75,179 @@
         --header-height: 70px;
       }
     }
+
+    /* Critical CSS */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-text);
+      background: var(--color-background);
+      overflow-x: hidden;
+    }
+
+    body.is-loading {
+      overflow: hidden;
+    }
+
+    /* Buttons Reset */
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    /* Links */
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Images */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 var(--container-padding);
+    }
+
+    /* Accessibility */
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .skip-to-content {
+      position: absolute;
+      top: -100%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10001;
+      padding: 16px 32px;
+      background: var(--color-foreground);
+      color: var(--color-background);
+      transition: top 0.3s;
+    }
+
+    .skip-to-content:focus {
+      top: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .btn--primary {
+      background: var(--color-foreground);
+      color: var(--color-background);
+      border-color: var(--color-foreground);
+    }
+
+    .btn--primary:hover {
+      background: transparent;
+      color: var(--color-foreground);
+    }
+
+    .btn--secondary {
+      background: transparent;
+      color: var(--color-foreground);
+      border-color: var(--color-foreground);
+    }
+
+    .btn--secondary:hover {
+      background: var(--color-foreground);
+      color: var(--color-background);
+    }
+
+    .btn--full {
+      width: 100%;
+    }
+
+    .btn--small {
+      padding: 10px 20px;
+      font-size: 10px;
+    }
+
+    /* Loading State */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--color-background);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    body.is-loading .loading-overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--color-border);
+      border-top-color: var(--color-foreground);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
-<body class="template-{{ template.name }}">
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
   <a class="skip-to-content" href="#MainContent">Skip to content</a>
+
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
 
   {% section 'announcement-bar' %}
   {% section 'header' %}
@@ -68,6 +258,166 @@
 
   {% section 'footer' %}
 
+  {% render 'cart-drawer' %}
+  {% render 'mobile-menu' %}
+
+  <!-- Search Overlay -->
+  <div class="search-overlay" data-search-overlay aria-hidden="true">
+    <div class="search-overlay__container">
+      <button type="button" class="search-overlay__close" data-search-close aria-label="Close search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <form action="/search" method="get" class="search-overlay__form" role="search">
+        <input 
+          type="search" 
+          name="q" 
+          placeholder="Search..."
+          class="search-overlay__input"
+          data-search-input
+          autocomplete="off"
+          aria-label="Search"
+        >
+        <input type="hidden" name="type" value="product">
+      </form>
+      <div class="search-overlay__results" data-search-results></div>
+    </div>
+  </div>
+
   {{ 'theme.js' | asset_url | script_tag }}
+
+  <script>
+    // Remove no-js class
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+    
+    // Initialize search overlay close
+    document.querySelectorAll('[data-search-close]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector('[data-search-overlay]')?.classList.remove('is-visible');
+        document.body.style.overflow = '';
+      });
+    });
+    
+    // Close search on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelector('[data-search-overlay]')?.classList.remove('is-visible');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+
+  <style>
+    /* Search Overlay */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.98);
+      z-index: 10000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 120px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .search-overlay.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .search-overlay__container {
+      width: 100%;
+      max-width: 600px;
+      padding: 0 20px;
+    }
+
+    .search-overlay__close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-overlay__form {
+      margin-bottom: 24px;
+    }
+
+    .search-overlay__input {
+      width: 100%;
+      padding: 20px 0;
+      font-size: 24px;
+      font-family: var(--font-heading);
+      border: none;
+      border-bottom: 2px solid var(--color-foreground);
+      background: transparent;
+      outline: none;
+    }
+
+    @media (min-width: 768px) {
+      .search-overlay__input {
+        font-size: 32px;
+      }
+    }
+
+    .search-overlay__results {
+      display: none;
+    }
+
+    .search-overlay__results.is-visible {
+      display: block;
+    }
+
+    .search-result {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--color-border);
+      transition: opacity 0.2s ease;
+    }
+
+    .search-result:hover {
+      opacity: 0.7;
+    }
+
+    .search-result__image {
+      width: 60px;
+      height: 80px;
+      object-fit: cover;
+      background: #f5f5f5;
+    }
+
+    .search-result__info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .search-result__title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .search-result__price {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+
+    .search-result__empty {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--color-text-muted);
+    }
+  </style>
 </body>
 </html>

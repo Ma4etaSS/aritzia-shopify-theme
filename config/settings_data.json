@@ -1,46 +1,46 @@
 {
   "current": {
-    "color_primary": "#000000",
-    "color_secondary": "#ffffff",
     "color_background": "#ffffff",
-    "color_background_secondary": "#f5f5f5",
+    "color_foreground": "#000000",
     "color_text": "#000000",
-    "color_text_secondary": "#666666",
-    "color_sale": "#c41e3a",
-    "font_body_size": 14,
-    "page_width": 1440,
-    "spacing_sections": 60,
-    "cart_type": "drawer",
+    "color_text_muted": "#666666",
+    "color_border": "#e5e5e5",
+    "color_accent": "#000000",
+    "heading_font": "cormorant_garamond_n4",
+    "body_font": "assistant_n4",
+    "cart_drawer_enabled": true,
+    "cart_show_free_shipping": true,
+    "cart_free_shipping_threshold": "150",
     "sections": {
       "header": {
         "type": "header",
         "settings": {
-          "menu": "main-menu"
+          "transparent_header": true,
+          "sticky_header": true
         }
       },
       "footer": {
         "type": "footer",
-        "settings": {
-          "show_newsletter": true
-        }
+        "settings": {}
       },
       "announcement-bar": {
         "type": "announcement-bar",
-        "blocks": {
-          "msg1": {
-            "type": "message",
-            "settings": {
-              "text": "Free shipping on orders over $150",
-              "link_text": "Shop Now"
-            }
-          }
-        },
-        "block_order": ["msg1"],
         "settings": {
-          "background_color": "#000000",
-          "text_color": "#ffffff"
+          "text": "Free shipping on orders over $150",
+          "link": "/collections/all"
         }
       }
+    },
+    "content_for_index": []
+  },
+  "presets": {
+    "Default": {
+      "color_background": "#ffffff",
+      "color_foreground": "#000000",
+      "color_text": "#000000",
+      "color_text_muted": "#666666",
+      "color_border": "#e5e5e5",
+      "color_accent": "#000000"
     }
   }
 }

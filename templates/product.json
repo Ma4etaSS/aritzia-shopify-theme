@@ -2,60 +2,24 @@
   "sections": {
     "main": {
       "type": "main-product",
-      "blocks": {
-        "title": {
-          "type": "title",
-          "settings": {}
-        },
-        "price": {
-          "type": "price",
-          "settings": {}
-        },
-        "variant_picker": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "dropdown"
-          }
-        },
-        "quantity_selector": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true
-          }
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "title",
-        "price",
-        "variant_picker",
-        "quantity_selector",
-        "buy_buttons",
-        "description"
-      ],
       "settings": {
-        "enable_sticky_info": true,
-        "gallery_layout": "thumbnails",
-        "media_size": "large"
+        "show_vendor": false,
+        "show_sku": false,
+        "enable_sticky_info": true
       }
     },
-    "related-products": {
-      "type": "related-products",
+    "recommendations": {
+      "type": "featured-collection",
       "settings": {
-        "heading": "You May Also Like",
-        "products_count": 4
+        "subheading": "You May Also Like",
+        "heading": "Related Products",
+        "products_count": 4,
+        "show_view_all": false
       }
     }
   },
   "order": [
     "main",
-    "related-products"
+    "recommendations"
   ]
 }
